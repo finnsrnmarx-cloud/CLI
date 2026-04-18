@@ -1,0 +1,81 @@
+"""Chunk 1 — Viable phrases (multi-word king-path sequences).
+
+Tests phrases from 3 categories:
+  - Axiom-family instructions
+  - Short imperative phrases
+  - Related grammatical phrases
+"""
+from __future__ import annotations
+
+GRID_RAW = """
+r s d i f i n d t h s a r t
+e h r e s o d a e e t g n a
+n e t r h a l x h g o w i p
+e g e d a u y u e a e n r p
+p t n n m l l m x i d n e e
+o h u i n k t h a n a c s m
+a l n p f y l d e b s t t n
+u u m j a r e b e m e h r w
+m i t h d c e i g i u g t s
+t l a m i b f t o t e g e t
+s a i l n i i t n i a p e n
+n s t o a g r n i i o b r t
+i e t i r y e e s p r a y w
+t u n e n t y - t e s s i x
+""".strip()
+
+G = [r.split() for r in GRID_RAW.splitlines()]
+H, W = 14, 14
+DIRS = [(dr, dc) for dr in (-1, 0, 1) for dc in (-1, 0, 1) if (dr, dc) != (0, 0)]
+
+def count_king_paths(word, stop=None):
+    cnt = 0
+    def dfs(r, c, i, seen):
+        nonlocal cnt
+        if stop and cnt >= stop: return
+        if i == len(word): cnt += 1; return
+        for dr, dc in DIRS:
+            nr, nc = r+dr, c+dc
+            if 0<=nr<H and 0<=nc<W and (nr,nc) not in seen and G[nr][nc]==word[i]:
+                dfs(nr, nc, i+1, seen | {(nr, nc)})
+    for r in range(H):
+        for c in range(W):
+            if G[r][c] == word[0]:
+                dfs(r, c, 1, frozenset({(r, c)}))
+                if stop and cnt >= stop: return cnt
+    return cnt
+
+# Comprehensive phrase list (concatenated, no spaces)
+PHRASES = [
+    # 5 core axioms
+    ("findthestart", "FIND THE START", "★ CORE AXIOM"),
+    ("addthehexadecimals", "ADD THE HEXADECIMALS", "★ CORE AXIOM"),
+    ("stepbysix", "STEP BY SIX", "★ CORE AXIOM"),
+    ("thereisadateonwire", "THERE IS A DATE ON WIRE", "★ CORE AXIOM"),
+    ("lastentryentireinteger", "LAST ENTRY ENTIRE INTEGER", "★ CORE AXIOM"),
+    # Substrings confirmed
+    ("addthehexadecimal", "ADD THE HEXADECIMAL", "sub-axiom"),
+    ("thereisadate", "THERE IS A DATE", "sub-axiom"),
+    ("thereisadateon", "THERE IS A DATE ON", "sub-axiom"),
+    ("lastentry", "LAST ENTRY", "sub-axiom"),
+    ("entireinteger", "ENTIRE INTEGER", "sub-axiom"),
+    ("dateonwire", "DATE ON WIRE", "sub-axiom"),
+    ("findthe", "FIND THE", "sub-axiom"),
+    ("addthehex", "ADD THE HEX", "sub-axiom"),
+    ("hexadecimals", "HEXADECIMALS", "variant"),
+    ("hexadecimal", "HEXADECIMAL", "variant"),
+    ("itisinteger", "IT IS INTEGER", "variant"),
+    # Broader imperatives
+    ("stepbyten", "STEP BY TEN", "variant"),
+    ("findall", "FIND ALL", "variant"),
+    ("endatthe", "END AT THE", "variant"),
+    ("integers", "INTEGERS", "plural"),
+    ("integer", "INTEGER", "root"),
+]
+
+print(f"{'Phrase':<30s}  {'Paths':>6s}  {'Category'}")
+print("-" * 80)
+for word, display, category in PHRASES:
+    c = count_king_paths(word, stop=20)
+    marker = "✓" if c > 0 else "✗"
+    print(f"  {display:<32s}  {c:>5}  {category}  {marker}")
