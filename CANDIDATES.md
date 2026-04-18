@@ -30,12 +30,31 @@ Every number we've ever considered, ranked with star ratings and reasoning.
 | # | Answer | Stars | Reasoning |
 |---|---:|:---:|---|
 | 1 | **33** | ★★★★★ | **Four independent arcs converge**: (a) col 6 hex sum = 33 (unique across all cols), (b) hex-letter sum of the word "VANADIUM" = 33, (c) sum of U column-positions in the grid = 33, (d) 33⅓ RPM of vinyl LPs (TUNES theme). "STEP BY SIX" → col 6 reading is clean. |
-| 2 | **23** | ★★★★ | The word "dig" is said exactly 23 times in the PWEI song. 23 = atomic number of **Vanadium (V)**. V is one of the three letters literally missing from the grid (Q, V, Z). Title asks "Can U (V) dig it?" → you dig up the missing V. |
-| 3 | **2193** | ★★★★ | Step-6 hex sum starting at **first hex letter in grid reading order** (d at (1,3)) → 167. Add 2026 (bottom row as year). Most principled start-choice of any hex-chain theory. |
-| 4 | **2192** | ★★★★ | Step 6 ROWS (not letters) starting at row 1 → visit rows 1, 7, 13. Hex sum = 166. Add 2026. Elegantly excludes row 14 (the wire row) from stepping, then adds it as the "last entry entire integer". |
-| 5 | **56** | ★★★ | 33 + 23 = 56 = atomic number of **Barium (Ba)**, another dig-up metal. Combines both vanadium derivations. |
-| 6 | **79** | ★★★ | TUNES (anagram of bottom row extras) alphabet-position sum = 79 = atomic number of **Gold (Au)**. Gold is the iconic dig-for metal. Ties the title, the theme, and the bottom row extras. Slightly weaker now that shorter anagram findings are recognised as possible noise. |
-| 7 | **2180** | ★★★ | Gemini's verified self-contained chain: step-6 hex from flat-pos 8 (t at (1,9)) = 154, + 2026 = 2180. Mathematically verified but start-choice is arbitrary. |
+| 2 | **79** | ★★★★★ | **NEW: Three independent arcs converge**: (a) TUNES (bottom row extras) alphabet sum = 79, (b) **sum of all 5 axiom phrase lengths = 79** (12+18+9+18+22), (c) atomic number of Gold (Au) — the iconic dig-for metal. Axiom-length convergence discovered during this solve. |
+| 3 | **23** | ★★★★ | The word "dig" is said exactly 23 times in the PWEI song. 23 = atomic number of **Vanadium (V)**. V is one of the three letters literally missing from the grid (Q, V, Z). Title asks "Can U (V) dig it?" → you dig up the missing V. |
+| 4 | **2193** | ★★★★ | Step-6 hex sum starting at **first hex letter in grid reading order** (d at (1,3)) → 167. Add 2026 (bottom row as year). Most principled start-choice of any hex-chain theory. |
+| 5 | **2192** | ★★★★ | Step 6 ROWS (not letters) starting at row 1 → visit rows 1, 7, 13. Hex sum = 166. Add 2026. Elegantly excludes row 14 (the wire row) from stepping, then adds it as the "last entry entire integer". |
+| 6 | **56** | ★★★ | 33 + 23 = 56 = atomic number of **Barium (Ba)**, another dig-up metal. Combines both vanadium derivations. |
+| 7 | **46** | ★★★ | 79 − 33 = 46 = atomic number of **Palladium (Pd)**, another dig-up metal. Combines the two strongest convergent answers via subtraction. NEW. |
+| 8 | **2180** | ★★★ | Gemini's verified self-contained chain: step-6 hex from flat-pos 8 (t at (1,9)) = 154, + 2026 = 2180. Mathematically verified but start-choice is arbitrary. |
+
+---
+
+## NEW — CAN OPENER mechanics (from tin-opener idea)
+
+Column 1 reversed = `tinstmuaopener` contains **TIN** + **OPENER**. Cue
+to "open the can" (CAN = title "Can U Dig It?"). Test by separating
+perimeter ("can wall") from interior ("contents").
+
+| # | Answer | Stars | Reasoning |
+|---|---:|:---:|---|
+| 9 | **141** | ★★ | Perimeter hex sum (the "can shell"). 52 border cells, 11 hex letters. |
+| 10 | **549** | ★ | Interior 12×12 hex sum (the "can contents"). 44 hex letters. |
+| 11 | **2167** | ★ | 141 + 2026 (perimeter + year) |
+| 12 | **2575** | ★ | 549 + 2026 (interior + year) |
+| 13 | **135** | ★ | 33 + 23 + 79 (sum of three convergent answers). |
+| 14 | **66** | ★ | 2 × 33 = Dy (Dysprosium, another dig-metal). |
+| 15 | **158** | ★ | 2 × 79 = 2 × Au. |
 
 ---
 
