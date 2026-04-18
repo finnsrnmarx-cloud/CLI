@@ -29,9 +29,10 @@ Every number we've ever considered, ranked with star ratings and reasoning.
 
 | # | Answer | Stars | Reasoning |
 |---|---:|:---:|---|
-| 1 | **33** | ★★★★★ | **Four independent arcs converge**: (a) col 6 hex sum = 33 (unique across all cols), (b) hex-letter sum of the word "VANADIUM" = 33, (c) sum of U column-positions in the grid = 33, (d) 33⅓ RPM of vinyl LPs (TUNES theme). "STEP BY SIX" → col 6 reading is clean. |
-| 2 | **79** | ★★★★★ | **NEW: Three independent arcs converge**: (a) TUNES (bottom row extras) alphabet sum = 79, (b) **sum of all 5 axiom phrase lengths = 79** (12+18+9+18+22), (c) atomic number of Gold (Au) — the iconic dig-for metal. Axiom-length convergence discovered during this solve. |
-| 3 | **23** | ★★★★ | The word "dig" is said exactly 23 times in the PWEI song. 23 = atomic number of **Vanadium (V)**. V is one of the three letters literally missing from the grid (Q, V, Z). Title asks "Can U (V) dig it?" → you dig up the missing V. |
+| 1 | **167** | ★★★★★★ | **SELF-REFERENTIAL MATCH (new).** Starting at the first hex letter in reading order ('d' at (1,3)), stepping by 6 through the flat grid, and summing a-f values gives exactly 167. And 167 is the exact 1-based flat position of the LAST cell of the LASTENTRYENTIREINTEGER king-path. Verified uniquely (only this starting cell gives this match). Fully satisfies all 5 axioms without any +2026 or external-data assumption. |
+| 2 | **33** | ★★★★★ | **Four independent arcs converge**: (a) col 6 hex sum = 33 (unique across all cols), (b) hex-letter sum of the word "VANADIUM" = 33, (c) sum of U column-positions in the grid = 33, (d) 33⅓ RPM of vinyl LPs (TUNES theme). "STEP BY SIX" → col 6 reading is clean. |
+| 3 | **79** | ★★★★★ | **Three independent arcs converge**: (a) TUNES (bottom row extras) alphabet sum = 79, (b) sum of all 5 axiom phrase lengths = 79 (12+18+9+18+22), (c) atomic number of Gold (Au) — the iconic dig-for metal. |
+| 4 | **23** | ★★★★ | The word "dig" is said exactly 23 times in the PWEI song. 23 = atomic number of **Vanadium (V)**. V is one of the three letters literally missing from the grid (Q, V, Z). Title asks "Can U (V) dig it?" → you dig up the missing V. |
 | 4 | **2193** | ★★★★ | Step-6 hex sum starting at **first hex letter in grid reading order** (d at (1,3)) → 167. Add 2026 (bottom row as year). Most principled start-choice of any hex-chain theory. |
 | 5 | **2192** | ★★★★ | Step 6 ROWS (not letters) starting at row 1 → visit rows 1, 7, 13. Hex sum = 166. Add 2026. Elegantly excludes row 14 (the wire row) from stepping, then adds it as the "last entry entire integer". |
 | 6 | **56** | ★★★ | 33 + 23 = 56 = atomic number of **Barium (Ba)**, another dig-up metal. Combines both vanadium derivations. |
