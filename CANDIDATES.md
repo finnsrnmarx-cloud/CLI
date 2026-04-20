@@ -1,195 +1,697 @@
 # Master Candidate List — Jane Street April 2026 "Can U Dig It?"
 
-Every number we've ever considered, ranked with star ratings and reasoning.
-
-**Legend**
-- ★★★★★ Very strong — multiple independent confirmations, clean mechanic
-- ★★★★ Strong — one clear derivation, fits thematically
-- ★★★ Plausible — has support but not airtight
-- ★★ Possible — a reasonable derivation, somewhat speculative
-- ★ Unlikely — weak support, probably noise
-- ✗ Rejected by user
+> Every number we've seriously considered, now re-ranked by literal
+> axiom compliance. Last full rewrite: 2026-04-20 after the Mozart
+> K.184 / Symphony No. 26 discovery.
 
 ---
 
-## ✗ REJECTED (user-confirmed wrong)
+## The five axioms and their alternate readings
 
-| # | Answer | Reasoning | Why it failed |
-|---|---:|---|---|
-| ✗ | **600** | Alan Moore's *Unearthing* (2006/2010 essay) | External-trivia chain; MOORE doesn't trace in grid |
-| ✗ | **7** | Count of U's in the grid | Too trivial; doesn't use 14×14 structure |
-| ✗ | **3241** | Variant of Wire Tapper 22 theory | Ad-hoc arithmetic variant |
-| ✗ | **3242** | WT22 tracks 1/7/13/19 hex durations, one decimal exception | Arbitrary hex/decimal switch; external music trivia |
-| ✗ | **26** | Bottom row visually spells "twenty-six" | Too obvious; grid can't trace TWENTY as subseq |
-| ✗ | **22** | V alphabet-position (22); also hyphen (14+8) | No supporting structure |
-| ✗ | **134** | Step-6 grid variant | Submitted and failed |
-| ✗ | **167** | Step-6 hex letter sum on grid from 'd' (1,3) | Top old answer, submitted and failed |
-| ✗ | **2180** | Gemini's arbitrary-t version (154 + 2026) | Submitted and failed |
-| ✗ | **2192** | Row-step-6 hex sum + 2026 | Submitted and failed |
-| ✗ | **2193** | 167 + 2026 | Submitted and failed |
+The grid hides five imperative/declarative phrases as king-paths. Each
+is listed with every interpretation that's been seriously proposed.
 
----
+### AXIOM 1 — FIND THE START
+Locate a starting position.
+- **F-a** Top-left cell (1,1)
+- **F-b** First hex letter (`d` at (1,3)) in reading order
+- **F-c** The START king-path itself (cells (1,11) → (1,14))
+- **F-d** First byte of JPEG (SOI marker `FF D8`, byte 0)
+- **F-e** Second DQT marker (`FF DB 00 43 01`, byte 89-91)
+- **F-f** Track 6 on the PWEI album (byte 6)
+- **F-g** ALUMINUM diagonal anchor at (2,8)
 
-## TOP TIER — genuinely strong candidates
+### AXIOM 2 — STEP BY SIX
+Stride by 6.
+- **S-a** Stride 6 through flat-row-major grid (196 cells)
+- **S-b** Stride 6 rows (rows 1, 7, 13)
+- **S-c** Column index 6 (col 6 top-to-bottom)
+- **S-d** Stride 6 image bytes
+- **S-e** Track 6 on album (PWEI "Can U Dig It?")
+- **S-f** Symphony "No. 6" (ruled out — K.184 is No. 26, not 6)
+- **S-g** 14 − 8 = 6 (hyphen coords generate the stride)
 
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| ✗ | **167** | REJECTED | **SELF-REFERENTIAL MATCH (new).** Starting at the first hex letter in reading order ('d' at (1,3)), stepping by 6 through the flat grid, and summing a-f values gives exactly 167. And 167 is the exact 1-based flat position of the LAST cell of the LASTENTRYENTIREINTEGER king-path. Verified uniquely (only this starting cell gives this match). Fully satisfies all 5 axioms without any +2026 or external-data assumption. |
-| 2 | **33** | ★★★★★ | **Four independent arcs converge**: (a) col 6 hex sum = 33 (unique across all cols), (b) hex-letter sum of the word "VANADIUM" = 33, (c) sum of U column-positions in the grid = 33, (d) 33⅓ RPM of vinyl LPs (TUNES theme). "STEP BY SIX" → col 6 reading is clean. |
-| 3 | **79** | ★★★★★ | **Three independent arcs converge**: (a) TUNES (bottom row extras) alphabet sum = 79, (b) sum of all 5 axiom phrase lengths = 79 (12+18+9+18+22), (c) atomic number of Gold (Au) — the iconic dig-for metal. |
-| 4 | **23** | ★★★★ | The word "dig" is said exactly 23 times in the PWEI song. 23 = atomic number of **Vanadium (V)**. V is one of the three letters literally missing from the grid (Q, V, Z). Title asks "Can U (V) dig it?" → you dig up the missing V. |
-| ✗ | **2193** | REJECTED | Step-6 hex sum starting at **first hex letter in grid reading order** (d at (1,3)) → 167. Add 2026 (bottom row as year). Most principled start-choice of any hex-chain theory. |
-| ✗ | **2192** | REJECTED | Step 6 ROWS (not letters) starting at row 1 → visit rows 1, 7, 13. Hex sum = 166. Add 2026. Elegantly excludes row 14 (the wire row) from stepping, then adds it as the "last entry entire integer". |
-| 6 | **56** | ★★★ | 33 + 23 = 56 = atomic number of **Barium (Ba)**, another dig-up metal. Combines both vanadium derivations. |
-| 7 | **46** | ★★★ | 79 − 33 = 46 = atomic number of **Palladium (Pd)**, another dig-up metal. Combines the two strongest convergent answers via subtraction. NEW. |
-| ✗ | **2180** | REJECTED | Gemini's verified self-contained chain: step-6 hex from flat-pos 8 (t at (1,9)) = 154, + 2026 = 2180. Mathematically verified but start-choice is arbitrary. |
+### AXIOM 3 — ADD THE HEXADECIMALS
+Sum values interpreted as hexadecimal.
+- **H-a** Sum letter values a=10..f=15 for letters visited
+- **H-b** Sum byte values of image bytes visited
+- **H-c** Sum only bytes in 0x0A..0x0F range (strict-hex)
+- **H-d** Concatenate hex digits to form a multi-digit hex integer
+- **H-e** Sum hex-letter-positions weighted by frequency
 
----
+### AXIOM 4 — THERE IS A DATE ON WIRE
+A date is encoded at the hyphen/wire.
+- **D-a** Row 14 spells "twenty-six" → **date = 26**
+- **D-b** Publication year → **date = 2026**
+- **D-c** 14 − 8 = 6 (hyphen as subtraction operator; already absorbed as stride)
+- **D-d** Declarative only — date tells you WHERE to go (e.g. 26 indexes Köchel 184)
+- **D-e** Entry "date on wire" as metadata, not an addition
 
-## NEW — CAN OPENER mechanics (from tin-opener idea)
-
-Column 1 reversed = `tinstmuaopener` contains **TIN** + **OPENER**. Cue
-to "open the can" (CAN = title "Can U Dig It?"). Test by separating
-perimeter ("can wall") from interior ("contents").
-
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| 9 | **141** | ★★ | Perimeter hex sum (the "can shell"). 52 border cells, 11 hex letters. |
-| 10 | **549** | ★ | Interior 12×12 hex sum (the "can contents"). 44 hex letters. |
-| 11 | **2167** | ★ | 141 + 2026 (perimeter + year) |
-| 12 | **2575** | ★ | 549 + 2026 (interior + year) |
-| 13 | **135** | ★ | 33 + 23 + 79 (sum of three convergent answers). |
-| 14 | **66** | ★ | 2 × 33 = Dy (Dysprosium, another dig-metal). |
-| 15 | **158** | ★ | 2 × 79 = 2 × Au. |
+### AXIOM 5 — LAST ENTRY ENTIRE INTEGER
+The final value IS the answer.
+- **I-a** Raw sum; no modification; the integer stands whole
+- **I-b** Sum + 26 (date-on-wire additive)
+- **I-c** Sum + 2026 (calendar-year additive; **rejected empirically** — see 2192, 2193 below)
+- **I-d** Concatenate sum with date → `<sum><26>` or `<2026><sum>`
 
 ---
 
-## MID TIER — plausible but less certain
+## Scoring conventions
 
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| 8 | **14** | ★★★ | Grid side length AND count of "Can U dig it?" phrase in the song AND "twenty − six" subtraction of the bottom row. |
-| 9 | **63** | ★★★ | Al (13) + Sn (50). Only two elements that trace as clean straight-line placements. |
-| ✗ | **167** | REJECTED | Step-6 hex sum from (1,3) alone, without +2026 assumption. |
-| 11 | **166** | ★★★ | Rows 1/7/13 hex sum alone, without +2026. |
-| 12 | **184** | ★★ | Sum of atomic numbers of all 6 elements that trace as king-paths: Al+Ho+Ar+Fe+Ne+Sn = 13+67+18+26+10+50. |
-| 13 | **89** | ★★ | DATEONWIRE king-path hex sum. Also equals row 2 AND row 4 hex sums independently. 89 = Actinium (Ac). |
-| 14 | **294** | ★★ | Hex sum of rows 1-5 (everything before row 6, the "date discovery" zone). |
-| 15 | **32** | ★★ | Row 6 hex sum (alternate reading if "step by six" = 6th row). |
-| 16 | **2089** | ★★ | 2026 + 63 (year + Al+Sn). |
-| 17 | **2105** | ★★ | 2026 + 79 (year + Gold). |
-| 18 | **2067** | ★★ | Step-6 from real 't' of START (flat pos 13) + 2026. |
-| 19 | **2206** | ★★ | Rows 2/8/14 hex sum + 2026. |
-| 20 | **2716** | ★★ | Sum of ALL hex letters in grid (690) + 2026. |
-| 21 | **29** | ★★ | Bottom row as "twenty + IX" (Roman IX = 9) = 20 + 9. |
-| 22 | **2160** | ★★ | Step-6 from (2,8) start of ALUMINUM + 2026. |
-| 23 | **148** | ★★ | Hyphen position 14,8 concatenated. |
-| 24 | **2058** | ★★ | 32 (row 6) + 2026. |
-| 25 | **2320** | ★★ | Rows 1-5 (294) + 2026. |
-| 26 | **2176** | ★★ | Cols 1/7/13 hex sum (150) + 2026. |
-| 27 | **13** | ★★ | ALUMINUM atomic number alone; grid's longest lone straight-line word. |
-| 28 | **50** | ★★ | TIN atomic number alone. |
-| 29 | **2055** | ★★ | 2026 + 29 (year + Roman-IX reading). |
-| 30 | **760** | ★★ | 33 × 23 = 759 (close to but off by 1) |
+Each candidate gets a row in the axiom grid with:
+
+| Mark | Meaning |
+|:---:|---|
+| ✅ | Satisfies this axiom under a principled reading |
+| 🟡 | Satisfies under a stretched reading |
+| ❌ | Does not satisfy |
+| — | Not applicable |
+
+Candidates are ranked by count of ✅ first, then 🟡, then thematic
+strength.
+
+**End of Part 1 (definitions).**
 
 ---
 
-## LOW TIER — speculative derivations
+## PART 2 — TOP TIER (5/5 axioms satisfied)
 
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| 31 | **40** | ★ | Under alternate hex cipher where alphabet-position → hex (J–O as teen hex digits). Count of J/K/L/M/N/O in grid. |
-| 32 | **538** | ★ | Weighted sum under alternate hex cipher. |
-| 33 | **218** | ★ | Solfège scale-degree sum of hex letters (downgraded — short-word matches aren't strong evidence). |
-| 34 | **253** | ★ | Solfège with G included. |
-| 35 | **304** | ★ | Chromatic semitones, no G. |
-| 36 | **353** | ★ | Chromatic semitones including G. |
-| 37 | **254** | ★ | Fe (iron) symbol as hex = 0xFE. |
-| 38 | **142** | ★ | Al + Sn + Au atomic numbers. |
-| 39 | **339** | ★ | Sum of all king-path numbers {1,2,3,6,9,10,19,90,99,100}. |
-| 40 | **21** | ★ | Sum of king-path single-digit numbers {1,2,3,6,9}. |
-| 41 | **324** | ★ | Product of king-path single digits. |
-| 42 | **17** | ★ | Sum of straight-line digit-word values (1+6+10). |
-| 43 | **60** | ★ | Product of straight-line digit-words. |
-| 44 | **10** | ★ | Count of distinct traceable numbers; also 2+0+2+6 digit sum. |
-| 45 | **100** | ★ | HUNDRED is a traceable king-path. |
-| 46 | **4** | ★ | Smallest single-digit that can't be dug out of grid. |
-| 47 | **690** | ★ | Sum of ALL hex letters in grid. |
-| 48 | **65** | ★ | Alphabet positions of missing letters Q+V+Z (17+22+26). |
-| 49 | **196** | ★ | Grid area (14 × 14). |
-| 50 | **195** | ★ | Total letters in grid (14×14 − 1 hyphen). |
-| 51 | **2026** | ★ | Just the year alone — the bottom row read as entire integer. |
-| 52 | **1013** | ★ | Prime factor of 2026 (2 × 1013). |
-| 53 | **12369** | ★ | Concatenation of king-path single digits. |
-| 54 | **4578** | ★ | Concatenation of missing single digits. |
+### ★★★★★★ #1: **184** — Mozart Köchel catalogue closure
 
----
+**Axiom grid:**
 
-## PWEI / WIRE TAPPER derived (all weak — external trivia)
+| F (find) | S (step6) | H (hex) | D (date) | I (integer) |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e (2nd DQT byte 91) | ✅ S-d (image stride 6) | ✅ H-b (sum image bytes) | ✅ D-d (26 → K.184) | ✅ I-a (raw integer) |
 
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| 55 | **3404** | ★ | All 4 WT22 track durations consistently hex-summed (no exceptions). |
-| 56 | **1352** | ★ | All 4 track durations as plain decimals. |
-| 57 | **3128** | ★ | First 3 track durations as hex. |
-| 58 | **832** | ★ | Total seconds of all 4 tracks. |
-| 59 | **403** | ★ | Track 13 duration 4:03 stripped to decimal. |
-| 60 | **1027** | ★ | 0x403 hex of track 13. |
-| 61 | **1073** | ★ | PWEI album duration 4:31 as 0x431. |
-| 62 | **1061** | ★ | PWEI 12" 4:25 as 0x425. |
-| 63 | **3559** | ★ | Report method + PWEI album duration. |
-| 64 | **1989** | ★ | PWEI song release year. |
-| 65 | **30** | ★ | UK chart peak of PWEI single. |
-| 66 | **243** | ★ | PWEI 4:03 duration in seconds. |
+**Blurb — all connections:**
+
+Start at byte 91 of the JPEG image header (the table-id byte of the
+second DQT marker `FF DB 00 43 **01**`). This is the natural
+"FIND THE START": the grid points at the image, and the image's
+structural markers anchor position 91. Stride 6 through subsequent
+bytes. The running hex-sum is **184**.
+
+Row 14 of the grid phonetically spells **"twenty-six"** (letters 1-4
+are `TUNE`, then `NTY-TESSIX` merges into "twenty-six"). The wire
+(hyphen at (14,8)) bisects that "date". But **26 is not added** — it's
+an **index**: Mozart's **Symphony No. 26** has the Köchel catalogue
+number **K. 184**. Row 14 literally reads **"Tune 26"** = Symphony
+No. 26 = K. 184.
+
+Three-arc convergence:
+1. **Image mechanic** → step-6 hex sum from byte 91 = 184
+2. **Grid referent** → "Tune twenty-six" → Köchel 184
+3. **Grid element-sum** → sum of atomic numbers of elements mentioned
+   in the grid lands at 184
+
+"LAST ENTRY ENTIRE INTEGER" = 184 is clean, whole, and an actual
+catalogue number (so it IS an integer identifying a real entity).
+
+PWEI cross-check: "Can U Dig It?" is a pop-culture-reference song
+("Alan Moore knows the score"); the grid works the same way — the
+answer is only findable if you "dig" the cross-reference from "tune
+26" to Köchel. The song is also *Track 6* on its album, reinforcing
+STEP BY SIX.
+
+**This is the current top recommendation.**
 
 ---
 
-## LONG-SHOT derivations
+### ★★★★★ #2: **210** — Image closure + wire-date 26
 
-| # | Answer | Stars | Reasoning |
-|---|---:|:---:|---|
-| 67 | **86** | ★ | Sum of all U coordinate indices (rows+cols = 53+33). |
-| 68 | **53** | ★ | Sum of U row-positions. |
-| 69 | **38** | ★ | Distance the U's cover in Manhattan step sequence. |
-| 70 | **215** | ★ | Alphabet sum of "tunenty-tessix". |
-| 71 | **113** | ★ | Sum of alphabet-position counts of letters in CANUDIGIT. |
-| 72 | **95** | ★ | Same without duplicate I. |
-| 73 | **4140** | ★ | 690 × 6. |
-| 74 | **2214** | ★ | 369 × 6 (axiom hex sum × 6). |
-| 75 | **12156** | ★ | 2026 × 6 (PWEI track 6 × year). |
-| 76 | **54** | ★ | Step-6 from (1,8) hex sum alone. |
-| 77 | **61** | ★ | Col 8 (dash/wire column) hex sum. |
-| 78 | **24** | ★ | Sum of missing single-digit numbers (4+5+7+8); also 2+0+2+6×? |
-| 79 | **2087** | ★ | Col 8 hex sum + 2026. |
-| 80 | **2080** | ★ | Step-6 from (1,8) + 2026. |
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e | ✅ S-d | ✅ H-b | ✅ D-a (+26 additive) | ✅ I-b |
+
+**Blurb:**
+
+Same mechanic as 184, but treats D-a (adding 26) literally rather than
+as an index. `184 + 26 = 210`. This is the fallback if the Köchel
+interpretation is over-clever and the puzzle wanted a simple additive.
+Weaker than 184 because 210 has no thematic self-reference, but
+mechanically all 5 axioms are obeyed.
 
 ---
 
-## RECOMMENDED TRIAL ORDER
+### ★★★★★ #3: **333** — Track-6 + Al-Z convergence + 26
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-f (Track 6) | ✅ S-d | ✅ H-b | ✅ D-a | ✅ I-b |
+
+**Blurb:**
+
+Image step-6 starting at byte 6 (Track 6 = PWEI song position) gives
+one sum; starting at byte 13 (Aluminum Z, the anomalous diagonal
+anchor) gives another; they converge at **307**. Add 26 → **333**.
+
+Additional resonance: **3×111 = 333**, and **33⅓ RPM × 10s = 333** —
+TUNES theme (vinyl records). Column 6 hex sum = 33 is already a
+known anchor; 333 amplifies it. 10/10 thematic but the math is
+coincidence-adjacent.
+
+---
+
+### ★★★★★ #4: **115** — DATEONWIRE king-path hex + 26
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-c (START king-path) | 🟡 S-g (14−8=6) | ✅ H-a | ✅ D-a | ✅ I-b |
+
+**Blurb:**
+
+The THERE-IS-A-DATE-ON-WIRE king-path has hex-letter sum **89**
+(Actinium Z, incidentally). Add the date 26 → **115**. Satisfies all
+axioms via a fully grid-internal reading; weakest axiom is STEP BY SIX
+(the 6 comes from the hyphen operator 14−8=6, not a literal stride).
+
+---
+
+### ★★★★★ #5: **2210** — Image closure + calendar year
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e | ✅ S-d | ✅ H-b | 🟡 D-b | 🟡 I-c |
+
+**Blurb:**
+
+`184 + 2026 = 2210`. Same base mechanic as 184, but treats the date
+as calendar year (D-b) additively (I-c). **Empirically weakened** by
+the rejection of 2192/2193 (which were analogous +2026 constructs);
+but 184 base is stronger than 167 base, so this version might still
+land if the additive theory holds.
+
+**End of Part 2 (top tier).**
+
+---
+
+## PART 3 — MID TIER (3-4 axioms satisfied)
+
+### ★★★★ #6: **307** — Track-6 / Al-Z step-6 convergence (raw)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-f | ✅ S-d | ✅ H-b | ❌ | ✅ I-a |
+
+**Blurb:** Image step-6 from byte 6 or byte 13 both land on 307 for the
+hex-byte sum. Misses DATE ON WIRE entirely. Structurally elegant but
+doesn't close with row 14's "twenty-six" signal.
+
+---
+
+### ★★★★ #7: **89** — DATEONWIRE king-path hex (raw)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-c | 🟡 S-g | ✅ H-a | ✅ D-a | ✅ I-a |
+
+**Blurb:** King-path spelling THERE IS A DATE ON WIRE has hex-letter
+sum 89 (= Actinium Z, incidentally a radioactive element). Scores 4/5
+on strict axiom-count. Matches Actinium's thematic "dig deep" quality
+(rare-earth extraction).
+
+---
+
+### ★★★★ #8: **79** — TUNES / axiom-length / Gold
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ⚠ F-c | ❌ | 🟡 H-e | ❌ | ✅ I-a |
+
+**Blurb:** **Three independent grid-internal arcs** — (a) TUNES
+alphabet sum (T+U+N+E+S = 20+21+14+5+19 = 79), (b) sum of all 5 axiom
+string-lengths = 79, (c) atomic number of Gold (Au), the iconic
+dig-for metal. Extremely strong thematically but does NOT follow the
+literal procedure (no stride-6, no wire-date). The "answer" theory
+here is that the axioms are decorative and 79 is the grid's actual
+numerical output.
+
+---
+
+### ★★★★ #9: **33** — Col-6 hex / U-col / Vanadium / vinyl RPM
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| 🟡 F-a | ✅ S-c (col 6) | ✅ H-a | ❌ | ✅ I-a |
+
+**Blurb:** Four arcs — (a) col 6 letter hex-sum = 33, (b) sum of U
+column-positions across 7 U's = 33, (c) VANADIUM hex-letter sum (under
+one convention) = 33, (d) vinyl LP play speed 33⅓ RPM ties to TUNES
+theme. Satisfies STEP BY SIX via column-6 reading. Misses
+DATE ON WIRE. Historically strong but not axiom-complete.
+
+---
+
+### ★★★★ #10: **59** — Col-6 hex + 26
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| 🟡 F-a | ✅ S-c | ✅ H-a | ✅ D-a | ✅ I-b |
+
+**Blurb:** `33 + 26 = 59` — takes the well-supported 33 anchor and
+adds the wire-date 26 (D-a additive). Satisfies 4-5 axioms depending
+on how strict FIND THE START is read.
+
+---
+
+### ★★★★ #11: **105** — TUNES/axiom/Au + 26
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ⚠ F-c | ❌ | 🟡 | ✅ D-a | ✅ I-b |
+
+**Blurb:** `79 + 26 = 105`. The 79 anchor plus the wire-date additive.
+Only works if 79 is really the pre-date answer. 3/5 axioms.
+
+---
+
+### ★★★ #12: **49** — Dig-count + 26
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ✅ D-a | ✅ I-b |
+
+**Blurb:** `23 + 26 = 49`. 23 is the "dig count / missing V" anchor.
+Only satisfies DATE ON WIRE. Weak.
+
+---
+
+### ★★★ #13: **23** — Dig count / Vanadium Z / missing V
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Zero axiom support procedurally. Pure thematic: "dig"
+count in PWEI lyrics (one reading) = Vanadium Z = missing letter V's
+alphabet position (22) plus 1, etc. Included because its thematic
+density is unusually high (three cross-references) even though it
+ignores the axioms.
+
+**End of Part 3 (mid tier).**
+
+---
+
+## PART 4 — LOW TIER (0-1 axioms satisfied; thematic-only)
+
+### ★★ #14: **47** — Silver Z (deliberately absent dig-metal)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Silver's atomic number is 47. Silver is an archetypal
+dig-metal but SILVER doesn't trace as a king-path in the grid — it's
+conspicuously absent. Theory: the answer is the dig-metal you have to
+*discover* by its absence. Zero axiom support; pure thematic guess.
+
+---
+
+### ★★ #15: **56** — Barium Z (33 + 23)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** `33 + 23 = 56`, which is Barium's Z. Barium is used in
+drilling mud ("dig" theme). Combines the two strongest non-axiom
+anchors. Arithmetic is post-hoc.
+
+---
+
+### ★★ #16: **46** — Palladium Z (79 − 33)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** `79 − 33 = 46` = Palladium Z. Pd is mined; fits the theme.
+Subtraction feels post-hoc.
+
+---
+
+### ★★ #17: **44** — Ruthenium Z / PWEI dig count
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** PWEI lyrics say "dig" 44 times (verified count; earlier
+23 was wrong). Ruthenium Z = 44. Song-theme anchor only.
+
+---
+
+### ★ #18: **63** — Al + Sn (aluminothermic)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Aluminum (13) + Tin (50) = 63. Both elements have strong
+grid presence. Aluminothermic pair but arbitrary sum.
+
+---
+
+### ★ #19: **135** — 33 + 23 + 79
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Triple-sum of the three thematic anchors. Post-hoc; weak.
+
+---
+
+### ★ #20: **14** — Grid side
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** The grid is 14×14. "Can U dig it?" is 14 characters. Also
+= 20−6 (score minus six). Too trivial.
+
+---
+
+### ★ #21: **280** — 20 × 14
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Score (20) × grid side (14) = 280. Invokes "Alan Moore
+knows the score" (PWEI lyric) × grid dimension. Arithmetic thematic
+only.
+
+---
+
+### ★ #22: **720** — 36 × 20
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** 36 (count of 0x14 bytes in image) × 20 (score) = 720. Very
+speculative.
+
+---
+
+### ★ #23: **13** — Aluminum Z (anomalous diagonal)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| 🟡 F-g | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** The ALUMINUM diagonal at (2,8) is the grid's most anomalous
+feature. Al's Z = 13. Pure thematic anchor.
+
+---
+
+### ★ #24: **65** — Q + V + Z missing letters
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Alphabet positions of the three missing letters
+(17+22+26) = 65. Grid-internal but no axiom support.
+
+---
+
+### ★ #25: **112** — 14 × 8 (hyphen coords)
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-c | ❌ | ❌ | 🟡 D-c | ✅ I-a |
+
+**Blurb:** Hyphen at (14,8); product = 112 = Copernicium Z (rarely
+dug, short half-life, less thematic). Uses the wire position.
+
+---
+
+### ★ #26: **18** — Argon Z
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | 🟡 | ❌ | ✅ I-a |
+
+**Blurb:** Step-6 on delta-rows gives 18 in one variant. Argon isn't
+mined (it's a noble gas) — poor thematic fit.
+
+---
+
+### ★ #27: **50** — Tin Z
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ❌ | ❌ | ❌ | ❌ | ✅ I-a |
+
+**Blurb:** Tin's Z = 50. Tin ties to "tin opener" pun in col 1
+reversed. Pure thematic anchor.
+
+**End of Part 4 (low tier).**
+
+---
+
+## PART 5 — REJECTED CORPUS (submitted and confirmed wrong)
+
+These numbers have been tried and rejected. **Do NOT re-submit any of
+them.** Each entry explains what derivation produced it and — where
+possible — why the theory behind it fails.
+
+### ✗ **600** — Alan Moore / Unearthing
+
+**Theory:** Alan Moore's book *Unearthing* was published around 2006/2010;
+the song name-drops "Alan Moore knows the score". Some chain produced
+600 (likely 20 × 30, score × chart peak, or similar).
+
+**Post-mortem:** Relies on external biographical trivia (book pub date,
+chart peak) with no grid-internal derivation. MOORE doesn't king-path
+trace. Rejected — external trivia is not the answer pathway.
+
+---
+
+### ✗ **7** — Count of U's
+
+**Theory:** 7 U's in the grid; title says "Can **U** Dig It?" so count
+U's.
+
+**Post-mortem:** Too trivial; ignores the 14×14 structure, the axioms,
+and row 14. A 7-letter single-datum answer is almost never the solution
+to a meta-puzzle.
+
+---
+
+### ✗ **3241** — WT22 variant
+
+**Theory:** Variant of the Wire-Tapper-22 hex-track-durations chain
+(the original 3242 AI report).
+
+**Post-mortem:** Invalidates by being one-off ad-hoc arithmetic on
+top of an already ad-hoc chain. External music-trivia dependency.
+
+---
+
+### ✗ **3242** — Wire-Tapper-22 hex track durations
+
+**Theory:** Sum of Wire Tapper Vol. 22 compilation track durations,
+with tracks 1/7/13/19 read in hex and the rest decimal, plus various
+adjustments.
+
+**Post-mortem:** The original AI-generated "answer". Rejected by the
+community for being unmotivated (why those track numbers? why switch
+bases?). External data + arbitrary rules. Classic overfitting.
+
+---
+
+### ✗ **26** — Row-14 phonetic
+
+**Theory:** Row 14 spells "twenty-six" → answer is 26.
+
+**Post-mortem:** Too direct. Also, 26 = Iron's Z, but Iron isn't
+thematically central. **However**, this rejection IS the clue that led
+to the Mozart K.184 discovery: 26 isn't the answer *directly*, it's an
+INDEX into the Köchel catalogue → Symphony No. 26 → K. 184.
+
+---
+
+### ✗ **22** — V alphabet-position / hyphen 14+8
+
+**Theory:** V is alphabet letter 22; hyphen at (14,8), 14+8=22.
+
+**Post-mortem:** Coincidental convergence. The V-alphabet reading
+requires external knowledge; the 14+8 is a pure coord arithmetic with
+no axiom backing.
+
+---
+
+### ✗ **134** — Unspecified step-6 variant
+
+**Theory:** Some step-6 starting cell yields 134.
+
+**Post-mortem:** Arbitrary start cell; no FIND THE START principle
+justifies it.
+
+---
+
+### ✗ **167** — Step-6 hex from first hex-letter
+
+**Theory:** Start at first hex letter (`d` at (1,3)) in reading order,
+step 6 through flat grid, sum a-f values = 167. Claimed all-5-axioms
+satisfaction; also 167 was supposedly the flat-position of the last
+cell of the LAST-ENTRY-ENTIRE-INTEGER king-path.
+
+**Post-mortem:** The self-referential story was compelling but WRONG.
+Lesson: multiple "axiom-satisfying" mechanics can coincide on the same
+wrong number. This rejection demoted all 167-derivatives (2192, 2193)
+and made us suspect **the grid isn't the correct dataset — the image
+is**. The discovery pivot to image step-6 (yielding 184) followed
+this failure.
+
+---
+
+### ✗ **2180** — Gemini's step-6 from flat-pos 8 + 2026
+
+**Theory:** Step-6 hex from flat position 8 (`t` at (1,9)) yields
+154; add 2026 = 2180.
+
+**Post-mortem:** Arbitrary start (pos 8); +2026 mechanic unsupported.
+Gemini's attempt at a self-contained chain, but the start position
+was not principled.
+
+---
+
+### ✗ **2192** — 167 + 2025
+
+**Theory:** Step-6 hex from first hex letter → 167; add 2026−1 = 2192
+(off-by-one on year).
+
+**Post-mortem:** 167 base is wrong; any additive on it fails.
+
+---
+
+### ✗ **2193** — 167 + 2026
+
+**Theory:** 167 + 2026 (full year addition).
+
+**Post-mortem:** Same base failure as 2192. **Crucial empirical
+finding:** the fact that this fails is strong evidence that **adding
+2026 calendar-year is NOT the correct DATE ON WIRE mechanic**. This
+result specifically motivated the pivot to treating the date as 26
+(not 2026) or as an index (not an additive).
+
+---
+
+### Pattern observed across failures
+
+1. **Adding 2026 to anything has never worked.** 2180, 2192, 2193 all
+   failed. This narrows the DATE ON WIRE interpretation toward either
+   26-additive, 26-as-index, or date-as-metadata-only.
+2. **Step-6 on the grid (flat) has consistently failed.** 167 and
+   its relatives. This motivated the pivot to step-6 on the image
+   bytes (yielding 184).
+3. **External-trivia chains have all failed.** 600, 3241, 3242.
+   The answer is either fully grid-internal or grid+image-internal.
+4. **Single-number trivial answers have failed.** 7, 22, 26. The
+   answer is probably a multi-digit number that genuinely composes
+   multiple anchors.
+
+**End of Part 5 (rejected corpus).**
+
+---
+
+## PART 6 — Final recommendation and submission order
+
+### Scorecard summary
+
+| Rank | Value | Axioms ✅ | Thematic | Submit priority |
+|---:|---:|:---:|:---:|:---:|
+| 1 | **184** | 5/5 | ★★★★★★ | **SUBMIT FIRST** |
+| 2 | 210 | 5/5 | ★★★ | 2nd |
+| 3 | 333 | 5/5 | ★★★★ | 3rd (if +26 additive) |
+| 4 | 115 | 4/5 | ★★★ | 4th |
+| 5 | 2210 | 4/5 (🟡 on 2) | ★★★ | 5th (+2026 fallback) |
+| 6 | 307 | 3/5 | ★★★ | 6th |
+| 7 | 89 | 4/5 | ★★★ | 7th |
+| 8 | 79 | 1/5 | ★★★★★ | 8th (thematic gold-std) |
+| 9 | 33 | 3/5 | ★★★★ | 9th |
+| 10 | 59 | 4/5 | ★★★ | 10th (33 + 26) |
+| 11 | 105 | 2/5 | ★★★ | 11th (79 + 26) |
+| 12 | 49 | 1/5 | ★★ | 12th |
+| 13 | 23 | 0/5 | ★★★★ | 13th |
+
+### Suggested submission order
 
 ```
-1.  33        (top mechanical + thematic)
-2.  23        (dig count = Vanadium)
-3.  2193      (first hex letter step-6 + 2026)
-4.  2192      (row-step-6 + 2026)
-5.  56        (33 + 23 = Barium)
-6.  79        (TUNES = Gold)
-7.  14        (grid side / Can U dig it? count)
-8.  63        (Al + Sn)
-9.  2180      (Gemini's arbitrary-t version)
-10. 167       (hex sum alone)
-11. 166       (row-step-6 sum alone)
-12. 184       (all elements sum)
-13. 89        (DATEONWIRE hex sum)
-14. 13        (ALUMINUM alone)
+1.  184    ← Image step-6 from byte 91 = Mozart K.184 = "Tune 26"
+2.  210    ← 184 + 26 (wire-date additive)
+3.  333    ← Track6+Al step-6 + 26 (33⅓ RPM resonance)
+4.  115    ← DATEONWIRE hex + 26
+5.  2210   ← 184 + 2026 (calendar-year fallback)
+6.  307    ← Track6+Al step-6 raw
+7.  89     ← DATEONWIRE hex raw
+8.  79     ← TUNES/axiom-len/Au (pure thematic)
+9.  33     ← Col-6 hex (pure thematic)
+10. 59     ← 33 + 26
 ```
 
-## Meta-observation
+### If all top 10 fail — pivots
 
-The convergence on **33** (col 6 hex = vanadium hex-letters-sum = U-col-sum) and **23** (dig count = vanadium atomic number) points strongly at **vanadium** as the "answer substance" — the missing element you're meant to dig up.
+1. **Return to the original puzzle image** (PNG/PDF) and check for
+   visual features not captured in the plain-text grid (colored cells,
+   highlights, circled letters).
 
-If the puzzle answer is a single small integer, **33** has the most independent confirmations.
+2. **Interpret STEP BY SIX as the Köchel index**: if "Tune 26" →
+   K.184 worked for Symphony 26, maybe other hidden "Tune N" references
+   exist and the axioms pick one. Look for other embedded tune/symphony
+   numbers.
 
-If the puzzle demands a year-style integer, **2192** or **2193** is your best bet.
+3. **Re-examine "LAST ENTRY ENTIRE INTEGER"**: could mean "the last
+   K-number in the Mozart Symphony list" (K.551, the Jupiter Symphony).
+   That would make the answer 551 rather than 184.
 
-If the puzzle is chemistry-pure, **23** (Vanadium Z) or **56** (Barium) are plausible.
+4. **Check the PWEI album position**: "Can U Dig It?" is Track 6; the
+   album is *This Is the Day*. What's its catalog number in the band's
+   discography? A matching cross-reference.
+
+### Why 184 first
+
+1. ✅ Literally satisfies all 5 axioms under principled readings
+2. ✅ Has three independent closure arcs (image mechanic, Köchel
+   catalogue, element-sum)
+3. ✅ Explains the row-14 "twenty-six" signal as an INDEX, not an
+   additive (consistent with 2192/2193 failures)
+4. ✅ Explains the "tune" prefix in row 14 (TUNE + 26 = Symphony 26)
+5. ✅ The K.184 target is itself a clean integer pointing to a real,
+   unique cultural entity (a Mozart symphony)
+6. ✅ Mozart symphony theme closes the loop with "TUNES" in row 14
+
+### Why the prior #1 (167) was wrong (lesson learned)
+
+The 167 theory satisfied all 5 axioms via a self-referential closure
+(final cell position = sum). But it relied on STEP BY SIX on the grid
+bytes, and the sum was purely grid-internal. The puzzle almost
+certainly wanted the procedure applied to the IMAGE bytes (the raw
+JPEG `raw_header` — which is why the image was even embedded with
+visible hex). 167 was a siren song: elegant math on the wrong dataset.
+184 corrects the dataset choice and adds the Köchel cultural layer.
+
+### Final notes
+
+- **Never re-submit** any number from Part 5.
+- After each submission update this file (add failed number to Part 5,
+  re-rank remaining candidates) and re-commit.
+- If 184 succeeds, document the full solve path in `SUMMARY.md` so
+  future Jane Street puzzles benefit from the Mozart-cross-reference
+  lesson.
+
+**End of CANDIDATES.md — latest rewrite 2026-04-20.**

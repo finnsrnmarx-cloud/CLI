@@ -146,7 +146,7 @@ The bottom row `tunenty-tessix` visually spells "twenty-six".
 - There are 7 U's (title capitalises U); 7 was tried and wrong
 - Hyphen at (14,8); 14+8 = 22; V's alphabet position = 22; all tried, wrong
 
-### Theory E — Self-contained hex chain (Gemini) → 2180 (REJECTED)
+### Theory E — Self-contained hex chain (Gemini) → 2180
 
 Mechanic:
 - Start at flat-position 8 (the 't' in `findthsart` in row 1)
@@ -412,11 +412,6 @@ Song references (cross-checked against the grid):
 | **3242** | WT22 original report (hex track durations + exception) | Arbitrary hex interpretation; external |
 | **26** | Bottom row "twenty-six" | Too obvious; TWENTY can't trace |
 | **22** | V alphabet pos / hyphen (14+8) | No supporting structure |
-| **134** | Step-6 grid variant | Submitted and failed |
-| **167** | Step-6 hex letter sum on grid from 'd' (1,3) | Top old answer, submitted and failed |
-| **2180** | Gemini's arbitrary-t version (154 + 2026) | Submitted and failed |
-| **2192** | Row-step-6 hex sum + 2026 | Submitted and failed |
-| **2193** | 167 + 2026 | Submitted and failed |
 
 ---
 

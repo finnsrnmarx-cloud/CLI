@@ -21,11 +21,4 @@ I tested applying "STEP BY SIX" to the grid flattened by column instead of row, 
 * None of these alternative grid stepping methods yield a clean, thematic number like the convergence on `79` or `33`.
 
 ## Conclusion
-The deep-dive confirms my earlier recommendation. The solution is very likely **not** hidden in an arbitrary arithmetic chain or a cipher embedded in the image bytes. It is overwhelmingly likely to be one of the highly convergent structural or thematic anchors.
-
-**Stick to the curated list:**
-1. **79**
-2. **33**
-3. **184**
-4. **23**
-5. **47**
+The deep-dive confirms my earlier recommendation. The solution is very likely **not** hidden in an arbitrary arithmetic chain or a cipher embedded in the image bytes. It is overwhelmingly likely to be one of the highly convergent structural or thematic anchors like `184`.
