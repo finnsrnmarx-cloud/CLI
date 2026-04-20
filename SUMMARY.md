@@ -146,21 +146,27 @@ The bottom row `tunenty-tessix` visually spells "twenty-six".
 - There are 7 U's (title capitalises U); 7 was tried and wrong
 - Hyphen at (14,8); 14+8 = 22; V's alphabet position = 22; all tried, wrong
 
+### Theory E — Self-contained hex chain (Gemini) → 2180 (REJECTED)
 
 Mechanic:
 - Start at flat-position 8 (the 't' in `findthsart` in row 1)
 - Step by 6 through the grid reading order
 - Sum hex letters (a=10..f=15) encountered → 154
+- Add 2026 (bottom row as year, per LAST ENTRY ENTIRE INTEGER) → 2180
 
 **Strengths:** fully self-contained; no external data needed.
 **Weakness:** the starting 't' is one of 8 t's — no principled rule picks it.
 
+### Theory F — First hex letter start → 2193
 
 Same mechanic as Theory E but starting at the **first hex-valid letter in
+reading order** = `d` at (1,3). Hex sum = 167. +2026 = **2193**. More
 principled start rule than Theory E.
 
+### Theory G — Row-stepping by 6 → 2192
 
 Interpret STEP BY SIX as "step 6 rows". Starting at row 1, visit rows 1,
+7, 13. Hex sum of letters in those rows = 166. +2026 = **2192**. Row 14
 (the wire row) is excluded from stepping and then added separately as the
 "date on wire / last entry entire integer."
 
@@ -410,6 +416,7 @@ Song references (cross-checked against the grid):
 | **167** | Step-6 hex letter sum on grid from 'd' (1,3) | Top old answer, submitted and failed |
 | **2180** | Gemini's arbitrary-t version (154 + 2026) | Submitted and failed |
 | **2192** | Row-step-6 hex sum + 2026 | Submitted and failed |
+| **2193** | 167 + 2026 | Submitted and failed |
 
 ---
 
@@ -426,6 +433,7 @@ Grouped by star rating.
 | Answer | Reasoning |
 |---:|---|
 | **23** | "dig" said 23× in song = Vanadium Z = V missing from grid |
+| **2193** | 167 (step-6 hex from first hex letter 'd') + 2026 |
 | **2192** | Row-step-6 hex sum (166) + 2026 |
 | **56** | 33 + 23 = Barium Z (another dig-metal) |
 
@@ -436,6 +444,7 @@ Grouped by star rating.
 | **2180** | Step-6 hex from arbitrary t at (1,9) + 2026 (Gemini's version) |
 | **14** | Grid side AND "Can U dig it?" count AND twenty−six |
 | **63** | Al (13) + Sn (50) |
+| **167** | Step-6 hex from 'd' at (1,3) alone |
 | **166** | Row-step-6 hex sum alone |
 | **184** | Sum of atomic numbers of all 6 king-path elements |
 | **89** | DATEONWIRE king-path hex sum (also rows 2 and 4 each) |
@@ -535,10 +544,14 @@ If you can submit answers to Jane Street and get feedback, try in this order:
 ```
 1.  33        — col 6 hex sum = vanadium hex-letter sum = U col sum
 2.  23        — dig count in song = V = vanadium
+3.  2193      — first-hex-letter step-6 + 2026
+4.  2192      — row-step-6 + 2026
 5.  56        — 33 + 23 = Barium (dig theme)
 6.  79        — TUNES = Au (Gold, dig theme)
 7.  14        — grid side / Can U dig it? count
 8.  63        — Al + Sn
+9.  2180      — Gemini's arbitrary-t version
+10. 167       — step-6 hex alone
 11. 166       — row-step hex alone
 12. 2089      — 2026 + 63
 13. 2105      — 2026 + 79
@@ -590,7 +603,7 @@ Every analysis is committed to the repository as a Python script:
 - **Which exact starting cell does "FIND THE START" specify?** Multiple
   plausible choices give different hex sums.
 - **Does "2026 = bottom row" (the +2026 add-on) actually apply?**
-  If no, the answer is smaller (33, 79, etc.).
+  If no, the answer is smaller (33, 79, 167 etc.).
 - **Is "STEP BY SIX" referring to col 6, row 6, or flat-stride-6?** Each
   gives different numbers.
 - The user has tried 600, 7, 3241, 3242, 26, 22 — all wrong. The
