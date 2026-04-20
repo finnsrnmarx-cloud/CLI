@@ -175,6 +175,7 @@
     <span class="chip" data-stars="2"><span class="star">★</span>2+</span>
     <span class="chip" data-stars="0">hide numbers</span>
   </div>
+  <span id="rotateBtn" class="chip">↻ auto-rotate: off</span>
   <input id="searchbox" placeholder="🔍 search discoveries">
 </div>
 <div id="legend">
@@ -680,10 +681,19 @@ function filteredData() {
 
 // Build graph
 const elem = document.getElementById('graph');
-const Graph = ForceGraph3D()(elem)
+const Graph = ForceGraph3D({ controlType: 'orbit' })(elem)
   .backgroundColor('rgba(5,2,15,0)')
   .graphData(filteredData())
   .nodeRelSize(6)
+  // Stabilize the simulation quickly so it stops "pulsing"
+  .cooldownTicks(140)
+  .cooldownTime(6000)
+  .warmupTicks(20)
+  .d3AlphaDecay(0.035)
+  .d3VelocityDecay(0.45)
+  // Enable scroll-wheel zoom explicitly (default for OrbitControls)
+  .enableNodeDrag(true)
+  .enableNavigationControls(true)
   .nodeLabel(n => `<div style="font:14px Segoe UI;color:#fff;background:rgba(0,0,0,0.75);padding:8px 12px;border-radius:8px;border:1px solid ${n.color};max-width:280px">
     <strong style="color:${n.color};font-size:16px">${n.icon || ''} ${n.name}</strong><br/>
     <span style="color:#ddd">${(n.description || '').slice(0, 200)}</span>
@@ -725,11 +735,25 @@ const Graph = ForceGraph3D()(elem)
   .onNodeHover(n => elem.style.cursor = n ? 'pointer' : 'grab');
 
 // Set camera start
-setTimeout(() => Graph.cameraPosition({ x: 0, y: 0, z: 600 }, { x: 0, y: 0, z: 0 }, 0), 50);
+setTimeout(() => Graph.cameraPosition({ x: 0, y: 0, z: 700 }, { x: 0, y: 0, z: 0 }, 0), 50);
 
-// Periodically charge the sim
-Graph.d3Force('charge').strength(-140);
-Graph.d3Force('link').distance(80);
+// Tune the forces
+Graph.d3Force('charge').strength(-160).distanceMax(1500);
+Graph.d3Force('link').distance(90);
+
+// Expand OrbitControls zoom range so scroll-wheel works across wide distances
+setTimeout(() => {
+  const controls = Graph.controls();
+  if (controls) {
+    controls.minDistance = 40;
+    controls.maxDistance = 4000;
+    controls.enableZoom = true;
+    controls.zoomSpeed = 1.4;
+    controls.rotateSpeed = 0.9;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.12;
+  }
+}, 200);
 
 // Details panel renderer
 const dTitle = document.getElementById('dTitle');
@@ -817,13 +841,47 @@ searchbox.addEventListener('input', () => {
 // Show core on load
 setTimeout(() => showDetails('core'), 1000);
 
-// Auto-rotate slowly
-let angle = 0;
-setInterval(() => {
-  angle += 0.0012;
-  const r = 600;
-  Graph.cameraPosition({ x: r * Math.sin(angle), y: 100, z: r * Math.cos(angle) });
-}, 60);
+// ==========================================================
+// Opt-in auto-rotate — pauses on ANY user input so it never
+// fights dragging or scroll-zoom. Toggle via button in topbar.
+// ==========================================================
+let autoRotateOn = false;
+let autoAngle    = Math.PI; // start facing -z (looking at graph)
+let userInteracting = false;
+let interactionTimer;
+
+function beginInteraction() {
+  userInteracting = true;
+  clearTimeout(interactionTimer);
+  interactionTimer = setTimeout(() => { userInteracting = false; }, 1500);
+}
+['mousedown','wheel','touchstart','pointerdown'].forEach(ev =>
+  elem.addEventListener(ev, beginInteraction, { passive: true })
+);
+
+function rotateTick() {
+  if (autoRotateOn && !userInteracting) {
+    autoAngle += 0.002;
+    const r = 600;
+    // Use smooth tween over 250ms rather than snapping each frame
+    Graph.cameraPosition(
+      { x: r * Math.sin(autoAngle), y: 120, z: r * Math.cos(autoAngle) },
+      undefined,
+      250
+    );
+  }
+  requestAnimationFrame(rotateTick);
+}
+requestAnimationFrame(rotateTick);
+
+const rotateBtn = document.getElementById('rotateBtn');
+if (rotateBtn) {
+  rotateBtn.onclick = () => {
+    autoRotateOn = !autoRotateOn;
+    rotateBtn.classList.toggle('active', autoRotateOn);
+    rotateBtn.textContent = autoRotateOn ? '↻ auto-rotate: on' : '↻ auto-rotate: off';
+  };
+}
 </script>
 </body>
 </html>
