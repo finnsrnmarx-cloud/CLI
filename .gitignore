@@ -2,3 +2,6 @@ __pycache__/
 *.pyc
 *.pyo
 .DS_Store
+# Local-only solve guide (contains the answer; not for the public repo)
+*.pdf
+solve_guide.*
