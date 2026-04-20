@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can U Dig It? — 3D Discovery Web</title>
+<script src="https://unpkg.com/three@0.149.0/build/three.min.js"></script>
+<script src="https://unpkg.com/three-spritetext@1.8.1/dist/three-spritetext.min.js"></script>
+<script src="https://unpkg.com/3d-force-graph@1.73.0/dist/3d-force-graph.min.js"></script>
+<style>
+  :root {
+    --bg1: #05020f;
+    --bg2: #120b3a;
+    --bg3: #1e0a4b;
+    --panel: rgba(14, 10, 40, 0.88);
+    --brd: #6b4ed1;
+    --text: #f5f1ff;
+    --muted: #b7abe6;
+    --accent: #ffcd3a;
+    --star: #ffd54a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; width: 100%; overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: radial-gradient(ellipse at top, var(--bg3), var(--bg2) 60%, var(--bg1));
+    color: var(--text);
+  }
+  #graph { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
+  #topbar {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+    padding: 14px 22px;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--brd);
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  #topbar h1 {
+    font-size: 22px; letter-spacing: 1.2px;
+    background: linear-gradient(90deg, #ffcd3a, #ff6ec7, #56cbf9, #7ef1a4);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+  }
+  #topbar .subtitle { color: var(--muted); font-size: 13px; }
+  #topbar .spacer { flex: 1; }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    border: 1px solid var(--brd);
+    background: rgba(107, 78, 209, 0.18);
+    color: var(--text);
+    font-size: 13px; font-weight: 600;
+    border-radius: 20px; cursor: pointer;
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .chip:hover { background: rgba(107, 78, 209, 0.4); transform: translateY(-1px); }
+  .chip.active {
+    background: linear-gradient(90deg, #ffcd3a, #ff6ec7);
+    color: #111; border-color: #ffcd3a;
+    box-shadow: 0 0 18px rgba(255, 205, 58, 0.5);
+  }
+  .chip .star { color: var(--star); font-size: 14px; }
+
+  #searchbox {
+    padding: 7px 14px;
+    border: 1px solid var(--brd);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    border-radius: 20px;
+    outline: none;
+    font-size: 13px;
+    width: 240px;
+  }
+  #searchbox:focus { border-color: var(--accent); }
+
+  #legend {
+    position: absolute; top: 90px; left: 20px;
+    width: 250px; max-height: calc(100% - 120px); overflow: auto;
+    background: var(--panel);
+    border: 1px solid var(--brd);
+    border-radius: 14px;
+    padding: 16px 18px;
+    font-size: 14px;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+  }
+  #legend h3 {
+    font-size: 15px; margin-bottom: 10px;
+    color: var(--accent); letter-spacing: 0.5px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 6px 8px; border-radius: 8px; cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+    font-size: 14px;
+  }
+  .legend-item:hover { background: rgba(255,255,255,0.08); }
+  .legend-item.disabled { opacity: 0.3; }
+  .legend-swatch {
+    width: 18px; height: 18px; border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 10px currentColor;
+  }
+
+  #details {
+    position: absolute; top: 90px; right: 20px;
+    width: 380px; max-height: calc(100% - 120px); overflow: auto;
+    background: var(--panel);
+    border: 1px solid var(--brd);
+    border-radius: 14px;
+    padding: 20px;
+    z-index: 5;
+    backdrop-filter: blur(10px);
+  }
+  #details h3 {
+    font-size: 20px; color: var(--accent); margin-bottom: 10px;
+    border-bottom: 1px solid var(--brd); padding-bottom: 8px;
+    font-weight: 700;
+  }
+  #details .catTag {
+    display: inline-block;
+    padding: 3px 10px; margin: 6px 4px 6px 0;
+    font-size: 12px; font-weight: bold;
+    border-radius: 12px;
+  }
+  #details .starRow { font-size: 20px; margin: 6px 0; color: var(--star); }
+  #details .desc { color: var(--text); line-height: 1.6; font-size: 15px; margin-top: 10px; }
+  #details .links { margin-top: 14px; font-size: 14px; }
+  #details .links strong { color: #fff; }
+  #details .links a {
+    display: block; padding: 6px 10px; margin: 4px 0;
+    color: #9dd8ff; text-decoration: none;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  #details .links a:hover {
+    background: rgba(143, 212, 255, 0.12);
+    border-color: rgba(143, 212, 255, 0.4);
+  }
+
+  #footer {
+    position: absolute; bottom: 10px; left: 20px; right: 20px;
+    font-size: 12px; color: var(--muted);
+    background: rgba(0,0,0,0.4);
+    padding: 6px 14px;
+    border-radius: 8px;
+    z-index: 4;
+    text-align: center;
+  }
+
+  #starbar {
+    display: flex; gap: 6px;
+    align-items: center;
+  }
+  #starbar label { color: var(--muted); font-size: 12px; margin-right: 4px; }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <h1>⛏️ Can U Dig It? — 3D Discovery Web</h1>
+  <span class="subtitle">Jane Street · April 2026</span>
+  <div class="spacer"></div>
+  <div id="starbar">
+    <label>show candidates:</label>
+    <span class="chip active" data-stars="all">all</span>
+    <span class="chip" data-stars="5"><span class="star">★</span>5+</span>
+    <span class="chip" data-stars="4"><span class="star">★</span>4+</span>
+    <span class="chip" data-stars="3"><span class="star">★</span>3+</span>
+    <span class="chip" data-stars="2"><span class="star">★</span>2+</span>
+    <span class="chip" data-stars="0">hide numbers</span>
+  </div>
+  <input id="searchbox" placeholder="🔍 search discoveries">
+</div>
+<div id="legend">
+  <h3>🎨 Categories</h3>
+</div>
+<div id="details">
+  <h3 id="dTitle">💡 Click a node</h3>
+  <div id="dBody">
+    <p class="desc">Select any node to explore its discovery, evidence, and connections. Drag with mouse to rotate the graph in 3D. Scroll to zoom. Right-click + drag to pan.</p>
+  </div>
+</div>
+<div id="graph"></div>
+<div id="footer">3D force-directed graph · hover to preview · click for details · drag to rotate the discovery web in three dimensions</div>
+<script>
+// ==========================================================
+// PART 2 — categories, icons, helpers
+// ==========================================================
+const CATEGORIES = {
+  core:        { color: '#ffffff', icon: '⛏️', label: 'Core puzzle' },
+  axiom:       { color: '#c084fc', icon: '📜', label: 'The 5 axioms' },
+  clue:        { color: '#a78bfa', icon: '🧩', label: 'Clues & interpretations' },
+  chemistry:   { color: '#34d399', icon: '⚗️', label: 'Chemistry / elements' },
+  mozart:      { color: '#fbbf24', icon: '🎼', label: 'Mozart / Köchel' },
+  pwei:        { color: '#f87171', icon: '🎸', label: 'PWEI song' },
+  image:       { color: '#60a5fa', icon: '🖼️', label: 'Image / JPEG hex' },
+  kingpath:    { color: '#fb923c', icon: '♚',  label: 'King-paths' },
+  straightword:{ color: '#14b8a6', icon: '📏', label: 'Straight-line words' },
+  gridfact:    { color: '#94a3b8', icon: '⬛', label: 'Grid facts' },
+  date:        { color: '#f472b6', icon: '📅', label: 'Dates / wire' },
+  mechanic:    { color: '#22d3ee', icon: '⚙️', label: 'Mechanics tested' },
+  candidate:   { color: '#fde047', icon: '🎯', label: 'Candidate answers' },
+  failed:      { color: '#dc2626', icon: '✗',  label: '✗ Rejected answers' }
+};
+
+// Render legend
+const legendDiv = document.getElementById('legend');
+const activeCategories = new Set(Object.keys(CATEGORIES));
+Object.entries(CATEGORIES).forEach(([key, cfg]) => {
+  const row = document.createElement('div');
+  row.className = 'legend-item';
+  row.dataset.category = key;
+  row.innerHTML = `<span class="legend-swatch" style="background:${cfg.color};color:${cfg.color}"></span><span style="font-size:15px">${cfg.icon}</span><span>${cfg.label}</span>`;
+  row.onclick = () => {
+    if (activeCategories.has(key)) {
+      activeCategories.delete(key);
+      row.classList.add('disabled');
+    } else {
+      activeCategories.add(key);
+      row.classList.remove('disabled');
+    }
+    applyFilters();
+  };
+  legendDiv.appendChild(row);
+});
+
+// Discovery helper
+function D(id, title, category, description, extras = {}) {
+  return {
+    id,
+    name: title,
+    category,
+    description,
+    icon: CATEGORIES[category].icon,
+    color: CATEGORIES[category].color,
+    val: extras.size || 5,
+    stars: extras.stars || null,
+    isCandidate: extras.isCandidate || false,
+    isFailed: extras.isFailed || false,
+    connections: []
+  };
+}
+
+// ==========================================================
+// PART 3 — DISCOVERY NODES (everything we've found)
+// ==========================================================
+const DISCOVERIES = [
+  // Core
+  D('core', 'Can U Dig It?', 'core',
+    'Jane Street April 2026 puzzle: a 14×14 letter grid + 1 hyphen with instructions "drawn a blank". Answer must be a positive integer.',
+    { size: 30 }),
+
+  // ---- AXIOMS (king-path imperatives) ----
+  D('ax1', 'FIND THE START', 'axiom',
+    '12-char king-path telling you to locate a starting position in some dataset.', { size: 18 }),
+  D('ax2', 'STEP BY SIX', 'axiom',
+    '9-char king-path telling you to stride by 6.', { size: 18 }),
+  D('ax3', 'ADD THE HEXADECIMALS', 'axiom',
+    '18-char king-path telling you to sum values treating a-f as hex.', { size: 18 }),
+  D('ax4', 'THERE IS A DATE ON WIRE', 'axiom',
+    '18-char DECLARATIVE king-path — odd grammar suggests this is informational, not an action.', { size: 18 }),
+  D('ax5', 'LAST ENTRY ENTIRE INTEGER', 'axiom',
+    '22-char king-path telling you the final value is the single integer answer.', { size: 18 }),
+
+  // ---- AXIOM CLUES / INTERPRETATIONS ----
+  D('cl_fv2', 'Image byte 91 = 2nd DQT', 'clue',
+    'FIND THE START → the 2nd JPEG quantization table begins at byte 91 with the table-id marker.'),
+  D('cl_fv3', 'First hex letter d at (1,3)', 'clue',
+    'FIND THE START → first a-f letter in grid reading order.'),
+  D('cl_fv4', 'START king-path cells', 'clue',
+    'The word START itself traces (1,11)→(1,14) in the grid.'),
+  D('cl_fv5', 'Track 6 = PWEI song position', 'clue',
+    'FIND THE START → the song "Can U Dig It?" is track 6 on its album.'),
+  D('cl_fv7', 'Byte 26 via twenty-six index', 'clue',
+    'Row-14 wire-date (26) indexes into image bytes.'),
+  D('cl_sv3', 'Column 6 reading', 'clue',
+    'STEP BY SIX → read down column index 6.'),
+  D('cl_sv4', 'Image byte stride of 6', 'clue',
+    'STEP BY SIX → skip 6 bytes between reads in JPEG.'),
+  D('cl_sv5', '14−8 = 6 hyphen operator', 'clue',
+    'STEP BY SIX → the hyphen coords literally subtract to the stride.'),
+  D('cl_sv6', '+6 through Köchel catalogue', 'clue',
+    'STEP BY SIX → stride 6 through K-numbers starting at K.184.'),
+  D('cl_hv1', 'a-f letters = 10-15', 'clue',
+    'ADD THE HEXADECIMALS → classic: sum only a,b,c,d,e,f letters as 10-15.'),
+  D('cl_hv3', 'Strict-hex bytes 0x0A-0x0F', 'clue',
+    'ADD THE HEXADECIMALS → only bytes literally in the a-f nibble range count.'),
+  D('cl_dv1', 'Date = 26 from twenty-six', 'clue',
+    'THERE IS A DATE ON WIRE → row 14 phonetically spells "twenty-six" around the hyphen.'),
+  D('cl_dv2', 'Date = 2026 calendar year', 'clue',
+    'Publication year. EMPIRICALLY WEAKENED — 2192/2193 already failed.'),
+  D('cl_dv4', '26 is an INDEX not an additive', 'clue',
+    '26 points at something external: Symphony 26 → Köchel 184.'),
+  D('cl_iv4', 'LAST ENTRY = K.626 Requiem', 'clue',
+    'LAST ENTRY ENTIRE INTEGER → literally Mozart\'s last Köchel entry.'),
+
+  // ---- CHEMISTRY ----
+  D('elAl', 'Aluminum (Z=13)', 'chemistry',
+    'Clean SW diagonal at (2,8). The only element name that appears as a pure straight-line in the grid — anomalous and deliberate.'),
+  D('elV', 'Vanadium (Z=23)', 'chemistry',
+    'V is a missing letter. Thematically present through aluminothermic chemistry.'),
+  D('elAu', 'Gold (Z=79)', 'chemistry',
+    'Iconic dig-metal. Matches TUNES alphabet sum AND 5-axiom length total.'),
+  D('elAg', 'Silver (Z=47)', 'chemistry',
+    'Deliberately ABSENT dig-metal. Strict-hex step-6 from byte 26 yields 47.'),
+  D('elFe', 'Iron (Z=26)', 'chemistry',
+    'Z=26 matches "twenty-six" but 26 as answer was rejected — became the clue to Mozart pivot.'),
+  D('elHo', 'Holmium (Z=67)', 'chemistry',
+    'DQT length byte 0x43 = 67. Suggests hex code correlates with periodic table.'),
+  D('elRu', 'Ruthenium (Z=44)', 'chemistry',
+    'Z=44 matches PWEI "dig" lyric count.'),
+  D('elAc', 'Actinium (Z=89)', 'chemistry',
+    'Z=89 matches the DATEONWIRE king-path hex-letter sum.'),
+  D('aluminothermic', 'Aluminothermic reduction', 'chemistry',
+    'V₂O₅ + 10 Al → 2 V + 5 Al₂O₃. You "DIG" vanadium out of its oxide using aluminum. Connects Al (visible diagonal) + V (missing letter) + title verb.',
+    { size: 12 }),
+
+  // ---- MOZART ----
+  D('moz_thread', 'Mozart thread', 'mozart',
+    'Row 14 phonetically spells TUNE + twenty-six → Symphony 26 → Köchel 184. The bridge that unified grid + image.',
+    { size: 20 }),
+  D('moz_sym26', 'Symphony No. 26 = K.184', 'mozart',
+    'Köchel number for Symphony 26. Matches our independent image step-6 sum.',
+    { size: 14 }),
+  D('moz_k161a', 'K.161a (alt catalog)', 'mozart',
+    'Symphony 26 has dual numbering K.184/161a. Note 184−161 = 23.'),
+  D('moz_k551', 'K.551 Jupiter', 'mozart',
+    'Last NUMBERED Mozart symphony.'),
+  D('moz_k626', 'K.626 Requiem', 'mozart',
+    'Literal last entry in the entire Köchel catalogue. Mozart died composing it.'),
+  D('moz_k622', 'K.622 Clarinet Concerto', 'mozart',
+    'Last K ≤ 626 reachable by +6 stride from K.184.'),
+
+  // ---- PWEI ----
+  D('pwei_song', 'PWEI "Can U Dig It?" (1989)', 'pwei',
+    'The song whose title the puzzle quotes. Pop Will Eat Itself, 1989.', { size: 16 }),
+  D('pwei_track6', 'Song is Track 6', 'pwei',
+    'Matches STEP BY SIX perfectly.'),
+  D('pwei_dig44', '"dig" said 44 times', 'pwei',
+    'Verified lyric count = Ruthenium Z.'),
+  D('pwei_moore', 'Alan Moore namedrop', 'pwei',
+    'Lyric: "Alan Moore knows the score" — score = 20.'),
+  D('pwei_score20', 'Score = 20 = 0x14', 'pwei',
+    'Archaic English. 0x14 hex = 20 decimal. JPEG tail is FULL of 0x14 bytes (31 consecutive).'),
+  D('pwei_album', 'Album: This Is This!', 'pwei',
+    'Full title references "the day / the hour" — a date.'),
+
+  // ---- IMAGE / JPEG ----
+  D('img_soi', 'SOI: FF D8 (byte 0)', 'image',
+    'JPEG start-of-image marker.'),
+  D('img_app0', 'APP0 JFIF (byte 2)', 'image',
+    'APP0 block with "JFIF" identifier. Density 0x90 × 0x90.'),
+  D('img_dqt1', 'DQT #1 length = 67', 'image',
+    'Quant table 1 starts at byte 20 with length byte 0x43 = 67 = Holmium Z.'),
+  D('img_dqt2', 'DQT #2 starts byte 89', 'image',
+    'Second quantization table.'),
+  D('img_step6_91', 'Byte 91 step-6 sum = 184', 'image',
+    'The key closure: image step-6 from 2nd DQT start equals K.184.', { size: 14 }),
+  D('img_step6_26', 'Byte 26 strict-hex = 47', 'image',
+    'Start at byte 26, stride 6, sum only 0x0A-0x0F bytes → 47 = Silver Z.', { size: 12 }),
+  D('img_0x14', '36× 0x14 in header', 'image',
+    '0x14 = 20 = score. 31 consecutive 0x14 bytes in the tail.'),
+  D('img_4085', 'Total visible bytes sum = 4085', 'image',
+    '4085 = 5 × 19 × 43.'),
+  D('img_jfif', 'Only JFIF extracts as text', 'image',
+    'Hex bytes do NOT decode to readable words beyond the JFIF magic.'),
+
+  // ---- KING-PATHS ----
+  D('kp_tunes', 'TUNES (bottom row) = 79', 'kingpath',
+    'T+U+N+E+S alphabet sum.'),
+  D('kp_axiomlen', '5-axiom length sum = 79', 'kingpath',
+    '12+9+18+18+22 = 79. Matches Gold Z.'),
+  D('kp_dig', 'DIG / DIGIT traces', 'kingpath',
+    'DIGIT as clean row-9 subsequence.'),
+  D('kp_dateonwire', 'DATEONWIRE king-path hex = 89', 'kingpath',
+    'Hex-letter sum along the DATE-ON-WIRE path equals Actinium Z.'),
+
+  // ---- STRAIGHT WORDS ----
+  D('sw_aluminum', 'ALUMINUM diagonal (2,8) SW', 'straightword',
+    'The only element name appearing as a clean straight line in the grid.'),
+  D('sw_tune26', 'Row 14: "TUNE" + "twenty-six"', 'straightword',
+    'First 4 letters = TUNE. Remainder parses phonetically as "twenty-six" split by hyphen. The Rosetta-stone row.',
+    { size: 14 }),
+  D('sw_tinopener', 'Col 1 reversed: tin opener', 'straightword',
+    '"tinstmuaopener" contains TIN + OPENER → can opener → title says "Can".'),
+
+  // ---- GRID FACTS ----
+  D('gf_size', '14×14 grid', 'gridfact', '196 cells: 195 letters + 1 hyphen.'),
+  D('gf_missing', 'Missing Q, V, Z', 'gridfact', 'Alphabet positions 17+22+26 = 65.'),
+  D('gf_hyphen', 'Hyphen at (14,8) = the wire', 'gridfact',
+    '14−8=6 (matches STEP BY SIX); 14×8=112; 14+8=22.'),
+  D('gf_u33', 'Σ U-column-positions = 33', 'gridfact', '7 Us; their column indices sum to 33.'),
+  D('gf_col6', 'Col 6 hex sum = 33', 'gridfact', 'Reading STEP BY SIX as column-6.'),
+  D('gf_singletons', 'Singletons J, K', 'gridfact', 'J at (8,4); K at (6,6).'),
+
+  // ---- DATES / WIRE ----
+  D('dt_26', 'Wire date = 26', 'date',
+    'Row-14 phonetic. The "date on wire" encoded explicitly.'),
+  D('dt_2026', 'Calendar year 2026', 'date',
+    'Adding 2026 has repeatedly FAILED (2180/2192/2193).'),
+  D('dt_rpm', '33⅓ RPM', 'date', 'TUNES → vinyl records.'),
+  D('dt_hyphenop', '14−8 = 6', 'date', 'Wire itself acts as subtraction operator → generates stride.'),
+
+  // ---- MECHANICS ----
+  D('mch_hexletter', 'Sum a-f letters', 'mechanic',
+    'Classic grid hex-sum. Produces 167 on flat grid — REJECTED.'),
+  D('mch_step6grid', 'Step-6 on flat grid', 'mechanic',
+    'Grid stride-6 family (167, 134, 154) — ALL REJECTED.'),
+  D('mch_step6img', 'Step-6 on image bytes', 'mechanic',
+    'JPEG stride-6 — yields 184, 47, 307. Our current best dataset choice.'),
+  D('mch_kingpath', 'King-path hex along axioms', 'mechanic',
+    'Sum hex letters along each axiom king-path.'),
+  D('mch_canopener', 'Can-opener perimeter strip', 'mechanic',
+    'Strip 52 border cells ("lid") from inner 12×12 ("contents").'),
+];
+
+// ==========================================================
+// PART 4 — CANDIDATE ANSWERS (from CANDIDATES.md, with star rating)
+// ==========================================================
+// Candidate helper
+function C(value, stars, title, description, links = []) {
+  return {
+    id: 'c_' + value,
+    name: `${value}`,
+    category: 'candidate',
+    description: title + ' — ' + description,
+    icon: '🎯',
+    color: stars >= 5 ? '#fde047' : stars >= 4 ? '#facc15' : stars >= 3 ? '#eab308' : '#ca8a04',
+    val: 6 + stars * 2.5,
+    stars: stars,
+    isCandidate: true,
+    title: title,
+    links: links
+  };
+}
+function F(value, why) {
+  return {
+    id: 'f_' + value,
+    name: `✗ ${value}`,
+    category: 'failed',
+    description: `REJECTED. ${why}`,
+    icon: '✗',
+    color: '#dc2626',
+    val: 5,
+    stars: 0,
+    isFailed: true
+  };
+}
+
+const CANDIDATES = [
+  // 5★ tier — axiom-complete
+  C(184, 5, 'Mozart K.184 closure',
+    'Image step-6 from byte 91 = K.184 = Symphony 26. Triple convergence: image mechanic + Köchel referent + element-sum match. ALL 5 axioms satisfied.',
+    ['img_step6_91','moz_sym26','sw_tune26','cl_fv2','cl_sv4','cl_dv4']),
+  C(47, 5, 'Silver Z (absent dig-metal)',
+    'Strict-hex step-6 from byte 26 → 47. The deliberately absent dig-metal. 5/5 axiom-compliant, wire-date used as INDEX.',
+    ['img_step6_26','elAg','cl_fv7','cl_hv3','cl_dv1','gf_missing']),
+  C(626, 5, 'K.626 Requiem — LAST ENTRY',
+    'Mozart\'s literal last Köchel entry. Perfectly fits LAST ENTRY ENTIRE INTEGER if the axiom means the catalogue\'s last item.',
+    ['moz_k626','cl_iv4','ax5']),
+
+  // 4★ tier
+  C(622, 4, 'K.622 Clarinet Concerto',
+    'Last K ≤ 626 reachable by +6 stride from K.184. Strictly axiom-compliant last-entry.',
+    ['moz_k622','cl_sv6','ax5']),
+  C(551, 4, 'K.551 Jupiter (last symphony)',
+    'Mozart\'s final numbered symphony. Alternative LAST ENTRY reading for symphony-specific interpretation.',
+    ['moz_k551']),
+  C(79, 4, 'TUNES / axiom-length / Gold',
+    '3-arc convergence: TUNES alphabet sum + 5-axiom length total + Gold Z. Thematic gold standard, weak on axiom procedure.',
+    ['kp_tunes','kp_axiomlen','elAu']),
+  C(33, 4, 'Col-6 hex / U-col / Vanadium',
+    '4-arc convergence: col-6 letter hex + U-col-positions + VANADIUM hex + 33⅓ RPM.',
+    ['gf_col6','gf_u33','elV','dt_rpm','cl_sv3']),
+  C(210, 4, '184 + 26 additive',
+    'Same mechanic as 184 but treats date-26 as additive rather than index.',
+    ['img_step6_91','dt_26']),
+
+  // 3★ tier
+  C(333, 3, 'Track-6 + Al step-6 + 26',
+    '307 (Track-6/Al convergence) + 26 wire-date. Also 3×111 = 33⅓ × 10s RPM resonance.',
+    ['pwei_track6','elAl','dt_26','dt_rpm']),
+  C(115, 3, 'DATEONWIRE hex + 26',
+    'King-path hex sum (89) + 26 wire-date.',
+    ['kp_dateonwire','dt_26']),
+  C(345, 3, 'K.184 + K.161a',
+    'Dual catalogue numbers sum. Elegant digit sequence 3-4-5.',
+    ['moz_sym26','moz_k161a']),
+  C(307, 3, 'Track-6 + Al step-6 raw',
+    'Image step-6 convergence at byte 6 (Track 6) and byte 13 (Aluminum Z).',
+    ['pwei_track6','elAl','cl_sv4']),
+  C(89, 3, 'DATEONWIRE hex raw',
+    'King-path hex sum = Actinium Z. 4/5 axioms via hyphen-as-stride reading.',
+    ['kp_dateonwire','elAc']),
+  C(23, 3, 'Dig count / Vanadium / missing V',
+    'PWEI dig count + V atomic number + missing letter V.',
+    ['elV','pwei_dig44','gf_missing']),
+
+  // 2★ tier
+  C(59, 2, '33 + 26', 'Col-6 hex + wire-date.',
+    ['gf_col6','dt_26']),
+  C(56, 2, 'Barium (33+23)', 'Used in drilling mud.',
+    ['elV','gf_col6']),
+  C(46, 2, 'Palladium (79−33)', 'Another dig-metal via arithmetic.',
+    ['kp_tunes','gf_col6']),
+  C(44, 2, 'Ruthenium / PWEI dig count', 'Song-theme anchor.',
+    ['pwei_dig44','elRu']),
+  C(1006, 2, 'Symphonies 26,32,38 K-sum', 'Stride-6 through Mozart symphony numbers.',
+    ['moz_sym26','cl_sv6']),
+  C(105, 2, '79 + 26', 'TUNES anchor + wire-date.',
+    ['kp_tunes','dt_26']),
+
+  // 1★ tier (weaker)
+  C(14, 1, 'Grid side', 'Trivial dimension.',
+    ['gf_size']),
+  C(65, 1, 'Q+V+Z sum', 'Missing-letters alphabet sum.',
+    ['gf_missing']),
+  C(112, 1, '14×8 hyphen coords', 'Product of wire coordinates = Copernicium Z.',
+    ['gf_hyphen']),
+  C(280, 1, '20×14 score×side', 'Score × grid side.',
+    ['pwei_score20','gf_size']),
+  C(720, 1, '36×20', '0x14 count × score.',
+    ['img_0x14','pwei_score20']),
+  C(135, 1, '33+23+79', 'Triple-sum.',
+    []),
+  C(50, 1, 'Tin Z', 'From tin-opener pun.',
+    ['sw_tinopener']),
+  C(13, 1, 'Aluminum Z', 'Anomalous diagonal.',
+    ['sw_aluminum','elAl']),
+  C(18, 1, 'Argon Z', 'Delta-row step-6 coincidence — poor dig fit (noble gas).',
+    []),
+];
+
+// Failed candidates
+const FAILED = [
+  F(600, 'Alan Moore / Unearthing external trivia.'),
+  F(7,   'Count of U\'s. Too trivial.'),
+  F(3241,'WT22 variant chain.'),
+  F(3242,'Wire Tapper 22 hex track durations — original AI "answer".'),
+  F(26,  'Row-14 phonetic raw. But became the clue to Mozart pivot!'),
+  F(22,  'V alphabet position / hyphen 14+8.'),
+  F(134, 'Arbitrary step-6 variant.'),
+  F(167, 'Step-6 hex from first hex letter on GRID. KEY rejection — pivoted us to IMAGE bytes.'),
+  F(2180,'Step-6 from pos 8 + 2026.'),
+  F(2192,'167 + 2025. Proves +2026 mechanic is wrong.'),
+  F(2193,'167 + 2026.'),
+];
+
+// ==========================================================
+// PART 5 — EDGES / LINKS between discoveries and candidates
+// ==========================================================
+const LINKS = [];
+function L(source, target, label = '', width = 1, color = null) {
+  LINKS.push({ source, target, label, width, color });
+}
+
+// Core → axioms and main themes
+['ax1','ax2','ax3','ax4','ax5'].forEach(a => L('core', a));
+L('core','moz_thread','Tune 26 bridge',3,'#ffcd3a');
+L('core','pwei_song','title quote',2,'#f87171');
+L('core','gf_size');
+L('core','gf_hyphen','the wire');
+
+// Axioms → clues
+L('ax1','cl_fv2'); L('ax1','cl_fv3'); L('ax1','cl_fv4'); L('ax1','cl_fv5'); L('ax1','cl_fv7');
+L('ax2','cl_sv3'); L('ax2','cl_sv4'); L('ax2','cl_sv5'); L('ax2','cl_sv6');
+L('ax3','cl_hv1'); L('ax3','cl_hv3');
+L('ax4','cl_dv1'); L('ax4','cl_dv2'); L('ax4','cl_dv4');
+L('ax5','cl_iv4');
+
+// Mozart internal
+L('moz_thread','moz_sym26');
+L('moz_thread','sw_tune26','row 14',2,'#fbbf24');
+L('moz_sym26','moz_k161a','184−161=23');
+L('moz_thread','moz_k551');
+L('moz_thread','moz_k626');
+L('moz_thread','moz_k622');
+
+// Chemistry connections
+L('elAl','sw_aluminum','clean diagonal');
+L('elAl','aluminothermic'); L('elV','aluminothermic');
+L('elV','gf_missing','V absent');
+L('elV','pwei_dig44','dig theme');
+L('elAu','kp_tunes'); L('elAu','kp_axiomlen');
+L('elAg','img_step6_26','strict-hex→47');
+L('elAg','gf_missing','Ag also absent');
+L('elFe','dt_26');
+L('elHo','img_dqt1','0x43=67');
+L('elRu','pwei_dig44');
+L('elAc','kp_dateonwire');
+
+// PWEI
+L('pwei_song','pwei_track6'); L('pwei_song','pwei_dig44');
+L('pwei_song','pwei_moore'); L('pwei_song','pwei_album');
+L('pwei_moore','pwei_score20');
+L('pwei_track6','ax2','track=step',2,'#f87171');
+L('pwei_score20','img_0x14','20=0x14');
+
+// Image cluster
+L('img_soi','img_app0'); L('img_app0','img_dqt1'); L('img_dqt1','img_dqt2');
+L('img_dqt2','img_step6_91','byte 91',2,'#60a5fa');
+L('img_step6_91','moz_sym26','K.184 bridge',3,'#ffcd3a');
+
+// King-paths → candidates anchors
+L('kp_tunes','elAu'); L('kp_axiomlen','elAu');
+L('kp_dig','pwei_dig44');
+L('sw_tune26','moz_sym26','TUNE 26',3,'#ffcd3a');
+L('sw_tinopener','core');
+L('sw_aluminum','elAl');
+
+// Grid facts
+L('gf_u33','gf_col6');
+L('gf_hyphen','dt_26'); L('gf_hyphen','dt_hyphenop');
+L('gf_col6','cl_sv3');
+
+// Dates
+L('dt_26','cl_dv1'); L('dt_26','cl_dv4');
+L('dt_2026','cl_dv2');
+L('dt_hyphenop','cl_sv5');
+
+// Mechanics
+L('mch_hexletter','ax3'); L('mch_step6grid','ax2');
+L('mch_step6img','ax2'); L('mch_kingpath','ax3');
+
+// Candidates → their supporting discoveries
+CANDIDATES.forEach(c => {
+  (c.links || []).forEach(disc => L(c.id, disc, '', 1.5, c.color));
+});
+
+// Failed candidates → which mechanic produced them
+L('f_167','mch_step6grid','old top'); L('f_167','mch_hexletter');
+L('f_2192','f_167'); L('f_2193','f_167'); L('f_2180','mch_step6grid');
+L('f_600','pwei_moore');
+L('f_26','sw_tune26','rejected pivot');
+L('f_3242','pwei_song');
+L('f_22','gf_hyphen');
+L('f_7','gf_size');
+
+// ==========================================================
+// PART 6 — 3D force graph instantiation + filters + interactivity
+// ==========================================================
+const ALL_NODES = [...DISCOVERIES, ...CANDIDATES, ...FAILED];
+
+// Deduplicate and sanitize links (drop any pointing to missing nodes)
+const nodeIds = new Set(ALL_NODES.map(n => n.id));
+const VALID_LINKS = LINKS.filter(l =>
+  nodeIds.has(typeof l.source === 'string' ? l.source : l.source.id) &&
+  nodeIds.has(typeof l.target === 'string' ? l.target : l.target.id)
+);
+
+let currentStarFilter = 'all';
+
+function filteredData() {
+  const visibleNodes = ALL_NODES.filter(n => {
+    if (!activeCategories.has(n.category)) return false;
+    if (n.isCandidate) {
+      if (currentStarFilter === 'all') return true;
+      if (currentStarFilter === '0') return false;
+      return (n.stars || 0) >= parseInt(currentStarFilter, 10);
+    }
+    if (n.isFailed) {
+      return activeCategories.has('failed');
+    }
+    return true;
+  });
+  const visIds = new Set(visibleNodes.map(n => n.id));
+  const visibleLinks = VALID_LINKS.filter(l => {
+    const s = typeof l.source === 'string' ? l.source : l.source.id;
+    const t = typeof l.target === 'string' ? l.target : l.target.id;
+    return visIds.has(s) && visIds.has(t);
+  });
+  return { nodes: visibleNodes, links: visibleLinks };
+}
+
+// Build graph
+const elem = document.getElementById('graph');
+const Graph = ForceGraph3D()(elem)
+  .backgroundColor('rgba(5,2,15,0)')
+  .graphData(filteredData())
+  .nodeRelSize(6)
+  .nodeLabel(n => `<div style="font:14px Segoe UI;color:#fff;background:rgba(0,0,0,0.75);padding:8px 12px;border-radius:8px;border:1px solid ${n.color};max-width:280px">
+    <strong style="color:${n.color};font-size:16px">${n.icon || ''} ${n.name}</strong><br/>
+    <span style="color:#ddd">${(n.description || '').slice(0, 200)}</span>
+  </div>`)
+  .nodeThreeObject(n => {
+    // Build a SpriteText label with icon
+    const starTxt = n.stars ? ' ' + '★'.repeat(Math.min(n.stars, 5)) : '';
+    const label = `${n.icon || ''} ${n.name}${starTxt}`;
+    const sprite = new SpriteText(label);
+    sprite.color = n.color;
+    sprite.backgroundColor = 'rgba(10,6,28,0.85)';
+    sprite.borderColor = n.color;
+    sprite.borderWidth = 2;
+    sprite.borderRadius = 6;
+    sprite.padding = 5;
+    sprite.textHeight = n.category === 'core' ? 9 : n.val && n.val > 12 ? 7 : 5;
+    sprite.fontFace = 'Segoe UI';
+    sprite.fontWeight = 'bold';
+    return sprite;
+  })
+  .nodeThreeObjectExtend(false)
+  .linkColor(l => l.color || 'rgba(190, 180, 230, 0.35)')
+  .linkWidth(l => l.width || 0.6)
+  .linkOpacity(0.55)
+  .linkLabel(l => l.label || '')
+  .linkDirectionalParticles(l => (l.width && l.width > 2) ? 3 : 0)
+  .linkDirectionalParticleSpeed(0.006)
+  .linkDirectionalParticleWidth(2)
+  .onNodeClick(node => {
+    // Smoothly aim camera at node
+    const distance = 120;
+    const distRatio = 1 + distance / Math.hypot(node.x || 1, node.y || 1, node.z || 1);
+    Graph.cameraPosition(
+      { x: (node.x || 0) * distRatio, y: (node.y || 0) * distRatio, z: (node.z || 0) * distRatio },
+      node, 1600
+    );
+    showDetails(node.id);
+  })
+  .onNodeHover(n => elem.style.cursor = n ? 'pointer' : 'grab');
+
+// Set camera start
+setTimeout(() => Graph.cameraPosition({ x: 0, y: 0, z: 600 }, { x: 0, y: 0, z: 0 }, 0), 50);
+
+// Periodically charge the sim
+Graph.d3Force('charge').strength(-140);
+Graph.d3Force('link').distance(80);
+
+// Details panel renderer
+const dTitle = document.getElementById('dTitle');
+const dBody  = document.getElementById('dBody');
+
+function showDetails(id) {
+  const n = ALL_NODES.find(x => x.id === id);
+  if (!n) return;
+  const cat = CATEGORIES[n.category];
+  dTitle.innerHTML = `${n.icon || ''} ${n.name}`;
+  dTitle.style.color = n.color;
+
+  let html = '';
+  html += `<span class="catTag" style="background:${n.color}33;color:${n.color};border:1px solid ${n.color}">${cat.icon} ${cat.label}</span>`;
+  if (n.stars) html += `<div class="starRow">${'★'.repeat(Math.min(n.stars, 5))}${'☆'.repeat(Math.max(0, 5 - n.stars))} (${n.stars} stars)</div>`;
+  html += `<p class="desc">${n.description || ''}</p>`;
+
+  // Connected nodes
+  const connectedIds = new Set();
+  VALID_LINKS.forEach(l => {
+    const s = typeof l.source === 'string' ? l.source : l.source.id;
+    const t = typeof l.target === 'string' ? l.target : l.target.id;
+    if (s === id) connectedIds.add(t);
+    if (t === id) connectedIds.add(s);
+  });
+  const neighbors = [...connectedIds].map(nid => ALL_NODES.find(x => x.id === nid)).filter(Boolean);
+  if (neighbors.length) {
+    html += `<div class="links"><strong>🔗 Connected to (${neighbors.length}):</strong>`;
+    neighbors.forEach(nb => {
+      html += `<a data-id="${nb.id}" style="color:${nb.color}">${nb.icon || ''} ${nb.name}</a>`;
+    });
+    html += `</div>`;
+  }
+  dBody.innerHTML = html;
+  dBody.querySelectorAll('a[data-id]').forEach(a => {
+    a.onclick = () => {
+      const targetNode = Graph.graphData().nodes.find(n => n.id === a.dataset.id);
+      if (targetNode) {
+        Graph.cameraPosition(
+          { x: (targetNode.x || 0) + 50, y: (targetNode.y || 0) + 50, z: (targetNode.z || 0) + 100 },
+          targetNode, 1200
+        );
+      }
+      showDetails(a.dataset.id);
+    };
+  });
+}
+
+// Star filter buttons
+document.querySelectorAll('.chip[data-stars]').forEach(chip => {
+  chip.onclick = () => {
+    document.querySelectorAll('.chip[data-stars]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentStarFilter = chip.dataset.stars;
+    applyFilters();
+  };
+});
+
+// Category + star filter apply
+function applyFilters() {
+  Graph.graphData(filteredData());
+}
+
+// Search
+const searchbox = document.getElementById('searchbox');
+searchbox.addEventListener('input', () => {
+  const q = searchbox.value.trim().toLowerCase();
+  if (!q) return;
+  const hit = ALL_NODES.find(n =>
+    n.name.toLowerCase().includes(q) ||
+    (n.description || '').toLowerCase().includes(q)
+  );
+  if (hit) {
+    const node = Graph.graphData().nodes.find(n => n.id === hit.id);
+    if (node) {
+      Graph.cameraPosition(
+        { x: (node.x || 0) + 50, y: (node.y || 0) + 50, z: (node.z || 0) + 120 },
+        node, 1200
+      );
+    }
+    showDetails(hit.id);
+  }
+});
+
+// Show core on load
+setTimeout(() => showDetails('core'), 1000);
+
+// Auto-rotate slowly
+let angle = 0;
+setInterval(() => {
+  angle += 0.0012;
+  const r = 600;
+  Graph.cameraPosition({ x: r * Math.sin(angle), y: 100, z: r * Math.cos(angle) });
+}, 60);
+</script>
+</body>
+</html>
