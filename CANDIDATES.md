@@ -194,6 +194,145 @@ land if the additive theory holds.
 
 ---
 
+## PART 2½ — NEW MOZART-EXTENSION CANDIDATES (2026-04-20 late)
+
+After the Symphony 26 / K.184 discovery, `image_mozart_extended.py`
+surfaced five more candidates that tighten the closure. All satisfy
+the axioms if you accept the Köchel interpretation of row-14.
+
+### ★★★★★ NEW #A: **626** — K.626 Requiem (Mozart's LAST composition)
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e (via K.184 start) | ✅ S-e (stride 6 K-numbers) | 🟡 H-d | ✅ D-d (26 as index) | ✅ I-a (the LAST entry) |
+
+**Blurb — why this is possibly the solve:**
+
+"LAST ENTRY ENTIRE INTEGER" is the single axiom most perfectly
+satisfied by **K.626 — the Requiem**, Mozart's unfinished final work
+and the actual **last numbered entry** in the Köchel catalogue. If
+row-14 points at Mozart (via "tune 26" → Symphony 26 → K.184), then
+the "LAST ENTRY" instruction may literally mean: ignore 184, jump to
+the catalogue's last entry → 626.
+
+Three confirmations:
+1. **K.626 IS Mozart's last entry** — the Köchel catalogue ends here
+2. **Requiem = "dig" theme** — literally a mass for the dead / burial
+3. **626 = 6 × 104 + 2 × 1** — note `6² × (something)` won't resolve
+   cleanly but "STEP BY SIX → 626" stride from K.2 (176 steps × 6 − 50)
+   doesn't work cleanly either. The mechanic is: start = K.184,
+   step by 6 until end of catalogue, take LAST.
+
+**Sequence from K.184 stepping +6**: 184, 190, 196, 202, ..., 622, 628
+(exceeds 626). Last valid ≤ 626 would be **K.622** (Clarinet Concerto),
+but the LAST Köchel number *period* is **K.626**.
+
+### ★★★★★ NEW #B: **622** — K.622 Clarinet Concerto (last step-6 entry)
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e (K.184) | ✅ S-e (+6 per step) | ✅ H-b | ✅ D-a | ✅ I-a |
+
+**Blurb:**
+
+Exactly what the axioms prescribe: start at K.184 (Tune 26), step by
+6 through Köchel numbers (184, 190, 196, 202, 208, …), stop at the
+LAST stride ≤ 626. That's K.622 — the Clarinet Concerto, Mozart's
+second-to-last work, composed during his final illness. Most
+rigorously axiom-compliant "last entry" reading after 184 itself.
+
+The sequence 184 → 190 → 196 → … → 622 has exactly **74 terms**
+(184 + 73×6 = 622). Interesting: 74 = count of king-moves between
+axiom-spelled-out words.
+
+### ★★★★ NEW #C: **551** — K.551 Jupiter Symphony (last SYMPHONY)
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e | 🟡 S-e | ✅ H-b | ✅ D-a | ✅ I-a |
+
+**Blurb:**
+
+If "LAST ENTRY" specifically means the last **Symphony** (because
+the title's TUNE = symphony), then the answer is K.551 — the Jupiter
+Symphony, Mozart's final numbered symphony (#41). Symphony-only
+interpretation. 551 is also a prime number.
+
+### ★★★★ NEW #D: **345** — K.184 + K.161a (alt-catalogue sum)
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-e | ❌ | ❌ | ✅ D-d | ✅ I-a |
+
+**Blurb:**
+
+Wikipedia lists Symphony No. 26 as "K.184 / 161a" — it has **two
+Köchel numbers**. Sum 184 + 161 = **345**. Elegant "digital identity"
+but doesn't invoke step-6 or hex. Thematic interest: 345 is
+consecutive digits 3-4-5.
+
+### ★★★★★ NEW #E: **47** (reinforced) — Silver Z, strict-hex from Symphony-26 byte
+
+**Axiom grid:**
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-d (byte 26 = Symphony 26 index) | ✅ S-d | ✅ H-c (strict-hex) | ✅ D-d | ✅ I-a |
+
+**Blurb:**
+
+**Major new finding.** Step-6 through image bytes starting at **byte
+26** (= Symphony 26 index from row-14), summing ONLY bytes in the
+0x0A-0x0F range (H-c, strict hex letters) → sum = **47**. That's
+**Silver (Ag)**, the deliberately-absent dig-metal.
+
+This is NOW the strongest 5/5 candidate after 184:
+- FIND THE START → start at byte 26 (Symphony 26 index from row 14)
+- STEP BY SIX → stride 6 through bytes
+- ADD THE HEXADECIMALS → strict interpretation: only 0x0A-0x0F bytes
+- THERE IS A DATE ON WIRE → the date (26) gave us the start position
+- LAST ENTRY ENTIRE INTEGER → 47
+
+Plus: Silver is THE archetypal dig-metal and its absence from the
+grid was previously a dangling clue.
+
+### ★★★ NEW #F: **1006** — Symphonies 26,32,38 K-sum
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-d | ✅ S-e (+6 symphonies) | ❌ | ✅ D-d | ✅ I-a |
+
+**Blurb:**
+
+Step by 6 through symphony **numbers** starting at 26: 26, 32, 38,
+44 (doesn't exist — Mozart wrote 41). Take K-numbers of the first
+three valid: K.184 + K.318 + K.504 = **1006**. Discards 41 because
+it breaks the stride.
+
+### ★★★ NEW #G: **1557** — Symphonies 26,32,38,41 K-sum
+
+| F | S | H | D | I |
+|:---:|:---:|:---:|:---:|:---:|
+| ✅ F-d | 🟡 S-e | ❌ | ✅ D-d | ✅ I-a |
+
+**Blurb:**
+
+Same as #F but includes K.551 (Symphony 41, the Jupiter, the LAST):
+1006 + 551 = **1557**. Satisfies "LAST ENTRY" by including the final
+symphony.
+
+**End of Part 2½ (Mozart extensions).**
+
+---
+
 ## PART 3 — MID TIER (3-4 axioms satisfied)
 
 ### ★★★★ #6: **307** — Track-6 / Al-Z step-6 convergence (raw)
@@ -629,19 +768,19 @@ result specifically motivated the pivot to treating the date as 26
 | 12 | 49 | 1/5 | ★★ | 12th |
 | 13 | 23 | 0/5 | ★★★★ | 13th |
 
-### Suggested submission order
+### Suggested submission order (REVISED after Mozart extensions)
 
 ```
-1.  184    ← Image step-6 from byte 91 = Mozart K.184 = "Tune 26"
-2.  210    ← 184 + 26 (wire-date additive)
-3.  333    ← Track6+Al step-6 + 26 (33⅓ RPM resonance)
-4.  115    ← DATEONWIRE hex + 26
-5.  2210   ← 184 + 2026 (calendar-year fallback)
-6.  307    ← Track6+Al step-6 raw
-7.  89     ← DATEONWIRE hex raw
-8.  79     ← TUNES/axiom-len/Au (pure thematic)
-9.  33     ← Col-6 hex (pure thematic)
-10. 59     ← 33 + 26
+1.  184    ← K.184 Symphony 26 "Tune 26" (image step-6 + Köchel)
+2.  47     ← Strict-hex step-6 from byte 26 = Silver (absent dig-metal)
+3.  626    ← K.626 Requiem (LAST ENTRY of Köchel catalogue)
+4.  622    ← K.622 Clarinet Concerto (last step-6 entry from K.184)
+5.  551    ← K.551 Jupiter (last symphony)
+6.  210    ← 184 + 26 additive
+7.  345    ← K.184 + K.161a (dual catalogue sum)
+8.  333    ← Track6+Al step-6 + 26
+9.  115    ← DATEONWIRE hex + 26
+10. 1006   ← Symphonies 26,32,38 K-sum
 ```
 
 ### If all top 10 fail — pivots
