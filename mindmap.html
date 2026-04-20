@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Can U Dig It? — Theory Mindmap</title>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  :root {
+    --bg-start: #0f0c29;
+    --bg-mid:   #302b63;
+    --bg-end:   #24243e;
+    --panel-bg: rgba(20, 18, 48, 0.92);
+    --panel-brd: #5b4ea8;
+    --text:     #f4f1ff;
+    --muted:    #b6b0e0;
+    --accent:   #ffcd3a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    height: 100%; width: 100%; overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: linear-gradient(120deg, var(--bg-start), var(--bg-mid), var(--bg-end));
+    color: var(--text);
+  }
+  #header {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 5;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--panel-brd);
+    display: flex; align-items: center; gap: 20px;
+  }
+  #header h1 {
+    font-size: 20px; letter-spacing: 1px;
+    background: linear-gradient(90deg, #ffcd3a, #ff6ec7, #56cbf9);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  #header .subtitle { color: var(--muted); font-size: 12px; }
+  #searchbox {
+    flex: 0 0 260px;
+    padding: 6px 10px;
+    border: 1px solid var(--panel-brd);
+    background: rgba(255,255,255,0.08);
+    color: var(--text);
+    border-radius: 8px;
+    outline: none;
+  }
+  #searchbox:focus { border-color: var(--accent); }
+  #network {
+    position: absolute; top: 56px; left: 0;
+    width: 100%; height: calc(100% - 56px);
+  }
+  #legend {
+    position: absolute; top: 76px; left: 20px;
+    width: 240px; max-height: calc(100% - 100px); overflow: auto;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-brd);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 13px;
+    z-index: 4;
+    backdrop-filter: blur(8px);
+  }
+  #legend h3 {
+    font-size: 14px; margin-bottom: 8px;
+    color: var(--accent); letter-spacing: 0.5px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 4px 6px; border-radius: 6px; cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .legend-item:hover { background: rgba(255,255,255,0.08); }
+  .legend-item.disabled { opacity: 0.35; }
+  .legend-swatch {
+    width: 14px; height: 14px; border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 8px currentColor;
+  }
+  #details {
+    position: absolute; top: 76px; right: 20px;
+    width: 320px; max-height: calc(100% - 100px); overflow: auto;
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-brd);
+    border-radius: 12px;
+    padding: 16px 18px;
+    z-index: 4;
+    backdrop-filter: blur(8px);
+  }
+  #details h3 {
+    font-size: 16px; color: var(--accent); margin-bottom: 10px;
+    border-bottom: 1px solid var(--panel-brd); padding-bottom: 6px;
+  }
+  #details .label-tag {
+    display: inline-block;
+    padding: 2px 8px; margin: 4px 4px 4px 0;
+    font-size: 11px; font-weight: bold;
+    border-radius: 10px;
+    background: rgba(255,205,58,0.2);
+    color: var(--accent);
+  }
+  #details .desc { color: var(--muted); line-height: 1.5; font-size: 13px; }
+  #details .links { margin-top: 10px; font-size: 12px; }
+  #details .links a {
+    display: block; padding: 4px 6px; margin: 2px 0;
+    color: #8fd4ff; text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #details .links a:hover { background: rgba(143, 212, 255, 0.1); }
+  #footer {
+    position: absolute; bottom: 8px; left: 20px;
+    font-size: 11px; color: var(--muted);
+    background: rgba(0,0,0,0.35);
+    padding: 4px 10px;
+    border-radius: 6px;
+    z-index: 3;
+  }
+  .badge {
+    display: inline-block;
+    padding: 1px 6px; margin-left: 4px;
+    font-size: 10px; font-weight: bold;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+  }
+  .badge.failed { background: #cc3344; color: white; }
+  .badge.top    { background: #ffcd3a; color: #222; }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>⛏️ Can U Dig It? — Theory Mindmap</h1>
+  <span class="subtitle">Jane Street · April 2026</span>
+  <input id="searchbox" placeholder="🔍 search nodes (e.g. 184, mozart)">
+</div>
+<div id="legend">
+  <h3>Categories (click to toggle)</h3>
+  <!-- legend items injected by JS -->
+</div>
+<div id="details">
+  <h3 id="details-title">💡 Click any node</h3>
+  <div id="details-body">
+    <p class="desc">
+      Select any node to see its full theory, axiom coverage, and
+      connections. Drag nodes to rearrange. Scroll to zoom.
+    </p>
+  </div>
+</div>
+<div id="network"></div>
+<div id="footer">
+  Theories visualized as a force-directed graph. Color = category.
+  Star ★ = top candidate. ✗ = rejected.
+</div>
+<script>
+// ===========================================================
+// PART 2 — Category definitions and color palette
+// ===========================================================
+const CATEGORIES = {
+  core:        { color: '#ffffff', label: 'Core puzzle',       shape: 'star' },
+  axiom:       { color: '#c084fc', label: 'The 5 axioms',      shape: 'hexagon' },
+  axiomVar:    { color: '#a78bfa', label: 'Axiom interpretations', shape: 'dot' },
+  chemistry:   { color: '#34d399', label: 'Chemistry / elements', shape: 'dot' },
+  mozart:      { color: '#fbbf24', label: 'Mozart / Köchel',    shape: 'diamond' },
+  pwei:        { color: '#f87171', label: 'PWEI song',          shape: 'dot' },
+  image:       { color: '#60a5fa', label: 'Image / JPEG hex',   shape: 'box' },
+  kingpath:    { color: '#fb923c', label: 'King-paths',         shape: 'triangle' },
+  straightword:{ color: '#14b8a6', label: 'Straight-line words',shape: 'square' },
+  gridfact:    { color: '#94a3b8', label: 'Grid facts',         shape: 'dot' },
+  date:        { color: '#f472b6', label: 'Dates / wire',       shape: 'triangleDown' },
+  candidateTop:{ color: '#fde047', label: '★ Top candidates',   shape: 'star' },
+  candidate:   { color: '#fcd34d', label: 'Candidates',         shape: 'dot' },
+  failed:      { color: '#dc2626', label: '✗ Rejected answers', shape: 'dot' },
+  mechanic:    { color: '#22d3ee', label: 'Mechanics tested',   shape: 'box' }
+};
+
+// Render legend
+const legendDiv = document.getElementById('legend');
+const activeCategories = new Set(Object.keys(CATEGORIES));
+Object.entries(CATEGORIES).forEach(([key, cfg]) => {
+  const row = document.createElement('div');
+  row.className = 'legend-item';
+  row.dataset.category = key;
+  row.innerHTML = `<span class="legend-swatch" style="background:${cfg.color};color:${cfg.color}"></span><span>${cfg.label}</span>`;
+  row.onclick = () => {
+    if (activeCategories.has(key)) {
+      activeCategories.delete(key);
+      row.classList.add('disabled');
+    } else {
+      activeCategories.add(key);
+      row.classList.remove('disabled');
+    }
+    applyFilter();
+  };
+  legendDiv.appendChild(row);
+});
+
+// Helper to build a node object
+function N(id, label, category, extra = {}) {
+  const cat = CATEGORIES[category];
+  return {
+    id,
+    label,
+    category,
+    group: category,
+    color: {
+      background: cat.color,
+      border: cat.color,
+      highlight: { background: '#fff', border: cat.color }
+    },
+    shape: cat.shape,
+    font: { color: '#111', size: 14, face: 'Segoe UI' },
+    title: extra.tooltip || label,
+    ...extra
+  };
+}
+
+// ===========================================================
+// PART 3 — Nodes: core, axioms, axiom variants, chemistry
+// ===========================================================
+const NODES_RAW = [
+  // ------- CORE -------
+  N('core', 'Can U Dig It?', 'core', {
+    size: 40,
+    description: 'The April 2026 Jane Street puzzle. 14×14 letter grid + 1 hyphen. Official instructions intentionally "drawn a blank". Answer = positive integer.'
+  }),
+
+  // ------- AXIOMS (king-path imperatives) -------
+  N('ax1', 'FIND THE START', 'axiom', {
+    size: 28,
+    description: '12-char king-path. Imperative: locate the start position in some dataset.'
+  }),
+  N('ax2', 'STEP BY SIX', 'axiom', {
+    size: 28,
+    description: '9-char king-path. Imperative: stride by 6.'
+  }),
+  N('ax3', 'ADD THE HEXADECIMALS', 'axiom', {
+    size: 28,
+    description: '18-char king-path. Imperative: sum values treating a-f as hex digits.'
+  }),
+  N('ax4', 'THERE IS A DATE ON WIRE', 'axiom', {
+    size: 28,
+    description: '18-char. Declarative (odd-one-out grammatically). A date is encoded on the wire (hyphen).'
+  }),
+  N('ax5', 'LAST ENTRY ENTIRE INTEGER', 'axiom', {
+    size: 28,
+    description: '22-char king-path. Imperative: the final value IS the single integer answer.'
+  }),
+
+  // ------- AXIOM VARIANTS (interpretations) -------
+  // FIND THE START variants
+  N('fv1', 'Byte 0 (SOI FF D8)', 'axiomVar', { description: 'Start at JPEG SOI marker byte 0.' }),
+  N('fv2', 'Byte 91 (2nd DQT)', 'axiomVar', { description: 'Start at the 2nd DQT table-id byte.' }),
+  N('fv3', 'First hex letter in grid', 'axiomVar', { description: 'First a-f letter in reading order: d at (1,3).' }),
+  N('fv4', 'START king-path cells', 'axiomVar', { description: 'The word START traces (1,11)→(1,14).' }),
+  N('fv5', 'Track 6 (PWEI)', 'axiomVar', { description: 'PWEI album track 6 = "Can U Dig It?".' }),
+  N('fv6', 'ALUMINUM anchor (2,8)', 'axiomVar', { description: 'The anomalous ALUMINUM diagonal starts here.' }),
+  N('fv7', 'Byte 26 (Symphony 26)', 'axiomVar', { description: 'Use row-14 "twenty-six" index into image bytes.' }),
+
+  // STEP BY SIX variants
+  N('sv1', 'Stride 6 flat grid', 'axiomVar', { description: 'Read 14×14 in row-major, skip 6 each.' }),
+  N('sv2', 'Stride 6 rows', 'axiomVar', { description: 'Visit rows 1, 7, 13 only.' }),
+  N('sv3', 'Column 6', 'axiomVar', { description: 'Read entire column 6 top-to-bottom.' }),
+  N('sv4', 'Stride 6 image bytes', 'axiomVar', { description: 'Skip 6 through JPEG bytes.' }),
+  N('sv5', '14−8 = 6 (hyphen op)', 'axiomVar', { description: 'Hyphen coords produce the stride value.' }),
+  N('sv6', 'Stride 6 Köchel numbers', 'axiomVar', { description: 'K.184, K.190, K.196, … +6 per step.' }),
+
+  // ADD THE HEXADECIMALS variants
+  N('hv1', 'a-f letters → 10-15', 'axiomVar', { description: 'Classic: only a,b,c,d,e,f letters count.' }),
+  N('hv2', 'All byte values', 'axiomVar', { description: 'Sum raw byte values, regardless of range.' }),
+  N('hv3', 'Strict-hex bytes 0x0A-0x0F', 'axiomVar', { description: 'Only bytes literally in hex-letter range.' }),
+  N('hv4', 'Concat hex digits', 'axiomVar', { description: 'Form a multi-digit hex integer.' }),
+
+  // DATE variants
+  N('dv1', 'Date = 26 (twenty-six)', 'axiomVar', { description: 'Row-14 phonetically spells twenty-six.' }),
+  N('dv2', 'Date = 2026 (calendar)', 'axiomVar', { description: 'Puzzle publication year. EMPIRICALLY WEAKENED (2192/2193 failed).' }),
+  N('dv3', '14−8 = 6 (already stride)', 'axiomVar', { description: 'Date redundantly encodes the stride value.' }),
+  N('dv4', '26 as INDEX (Köchel)', 'axiomVar', { description: '26 is a pointer, not an additive — Symphony 26 → K.184.' }),
+  N('dv5', 'Metadata only', 'axiomVar', { description: 'The statement is purely informational.' }),
+
+  // LAST ENTRY variants
+  N('iv1', 'Raw sum — no modification', 'axiomVar', { description: 'The final value IS the answer.' }),
+  N('iv2', 'Sum + 26', 'axiomVar', { description: 'Additive wire-date.' }),
+  N('iv3', 'Sum + 2026', 'axiomVar', { description: 'Additive calendar year. REJECTED EMPIRICALLY.' }),
+  N('iv4', 'Mozart catalogue LAST = K.626', 'axiomVar', { description: 'Requiem — last Köchel entry.' }),
+
+  // ------- CHEMISTRY / ELEMENTS -------
+  N('elAl',  'Aluminum · 13',   'chemistry', { description: 'ALUMINUM clean SW diagonal at (2,8). The anomalous anchor.' }),
+  N('elV',   'Vanadium · 23',   'chemistry', { description: 'V is a MISSING letter. Thematically present (reduction by Al).' }),
+  N('elAu',  'Gold · 79',       'chemistry', { description: 'Iconic dig-metal. Matches TUNES sum + axiom-length sum.' }),
+  N('elAg',  'Silver · 47',     'chemistry', { description: 'Deliberately absent dig-metal. Strict-hex step-6 from byte 26 → 47.' }),
+  N('elFe',  'Iron · 26',       'chemistry', { description: 'Z=26 matches "twenty-six" BUT 26 as answer was rejected.' }),
+  N('elHo',  'Holmium · 67',    'chemistry', { description: 'Z=67 = DQT length 0x43=67.' }),
+  N('elRu',  'Ruthenium · 44',  'chemistry', { description: 'Z=44 = PWEI song "dig" count.' }),
+  N('elAc',  'Actinium · 89',   'chemistry', { description: 'Z=89 = DATEONWIRE king-path hex sum.' }),
+  N('elBa',  'Barium · 56',     'chemistry', { description: 'Z=56 = 33+23. Used in drilling mud.' }),
+  N('elPd',  'Palladium · 46',  'chemistry', { description: 'Z=46 = 79−33.' }),
+  N('elSn',  'Tin · 50',        'chemistry', { description: 'Tin opener pun (col 1 reversed).' }),
+  N('elCn',  'Copernicium · 112','chemistry',{ description: 'Z=112 = 14×8 (hyphen coords).' }),
+  N('elAr',  'Argon · 18',      'chemistry', { description: 'Z=18 = delta-row step-6 sum. Noble gas — poor dig fit.' }),
+  N('elRn',  'Radon · 86',      'chemistry', { description: 'Z=86 = Watchmen pub year / PWEI formation era.' }),
+  N('aluminothermic', 'Aluminothermic reduction', 'chemistry', {
+    description: 'V₂O₅ + 10 Al → 2 V + 5 Al₂O₃. "Use Al to DIG V". Connects Al (visible) + V (missing) + title verb.'
+  }),
+
+  // ===========================================================
+  // PART 4 — Mozart, PWEI, image, grid facts, candidates, failed
+  // ===========================================================
+
+  // ------- MOZART / KÖCHEL -------
+  N('moz', 'Mozart thread', 'mozart', {
+    size: 30,
+    description: 'Row 14 phonetically spells "tune twenty-six" → Symphony No. 26 → Köchel K.184.'
+  }),
+  N('mozSym26', 'Symphony 26 = K.184', 'mozart', {
+    description: 'The central bridge: row-14 "Tune 26" maps to K.184 via the Köchel catalogue.'
+  }),
+  N('mozK161a', 'K.161a (alt catalog)', 'mozart', {
+    description: 'Symphony 26 has dual numbering: K.184 and K.161a. Note 184−161 = 23.'
+  }),
+  N('mozK551', 'K.551 Jupiter', 'mozart', {
+    description: 'Last numbered symphony (No. 41). Potential "LAST ENTRY" reading.'
+  }),
+  N('mozK626', 'K.626 Requiem', 'mozart', {
+    description: 'Literal last entry in the entire Köchel catalogue (unfinished at death).'
+  }),
+  N('mozK622', 'K.622 Clarinet Concerto', 'mozart', {
+    description: 'Last K ≤ 626 reachable by +6 stride from K.184.'
+  }),
+  N('mozK1', 'K.1 — first composition', 'mozart', {
+    description: 'Mozart\'s first composition (Menuett). Alt start point.'
+  }),
+
+  // ------- PWEI SONG -------
+  N('pweiSong', 'PWEI "Can U Dig It?"', 'pwei', {
+    size: 28,
+    description: 'The 1989 Pop Will Eat Itself song that the puzzle title quotes.'
+  }),
+  N('pweiTrack6', 'Track 6', 'pwei', { description: 'Song is track 6 on the album. Matches STEP BY SIX.' }),
+  N('pweiChart30', 'UK chart #30', 'pwei', { description: 'Peaked at #30.' }),
+  N('pweiDig44', '"dig" said 44 times', 'pwei', { description: 'Verified lyric count. Matches Ruthenium Z=44.' }),
+  N('pweiAlanMoore', 'Alan Moore lyric', 'pwei', { description: '"Alan Moore knows the score" — score = 20.' }),
+  N('pweiAlbum', 'Album: This Is This!', 'pwei', { description: '"This Is the Day… This Is This!" — thematically about a moment/date.' }),
+  N('pwei1989', '1989 release', 'pwei', { description: 'Matches Actinium Z=89.' }),
+  N('pweiScore20', 'Score = 20 = 0x14', 'pwei', { description: 'Archaic English. 0x14 hex = 20 decimal. Image tail is full of 0x14.' }),
+
+  // ------- IMAGE / JPEG HEX -------
+  N('imgSOI', 'SOI: FF D8 (byte 0)', 'image', { description: 'JPEG start-of-image marker.' }),
+  N('imgAPP0', 'APP0 / JFIF (byte 2)', 'image', { description: 'JPEG APP0 block with "JFIF" identifier.' }),
+  N('imgDQT1', 'DQT #1 (byte 20) · len=67', 'image', { description: 'First quantization table. Length 0x43 = 67 = Holmium Z.' }),
+  N('imgDQT2', 'DQT #2 (byte 89)', 'image', { description: 'Second quantization table. Our step-6 starts at byte 91.' }),
+  N('img0x14', '36× byte 0x14 (=20)', 'image', { description: '36 instances of 0x14 in 137-byte header; 31 consecutive in the tail.' }),
+  N('imgStep6_91', 'Step-6 from byte 91 → 184', 'image', {
+    description: 'The key closure: image step-6 from DQT2 start → 184 = K.184.'
+  }),
+  N('imgStep6_26', 'Strict-hex step-6 byte 26 → 47', 'image', {
+    description: 'Starting at byte 26 (Symphony-26 index), summing only 0x0A-0x0F bytes → 47 = Silver Z.'
+  }),
+  N('imgSum4085', 'Total bytes sum = 4085', 'image', { description: '4085 = 5 × 19 × 43.' }),
+  N('imgJFIF', 'Only "JFIF" extracts as ASCII', 'image', { description: 'No other readable words hidden in bytes.' }),
+
+  // ------- KING-PATHS (non-axiom) -------
+  N('kpTunes', 'TUNES (bottom row)', 'kingpath', { description: 'T+U+N+E+S alphabet sum = 79.' }),
+  N('kpDig', 'DIG / DIGIT', 'kingpath', { description: 'DIGIT as clean row-9 subsequence.' }),
+  N('kpAxiomSum', '5-axiom length sum = 79', 'kingpath', { description: '12+9+18+18+22 = 79 — matches Au.' }),
+
+  // ------- STRAIGHT WORDS -------
+  N('swAluminum', 'ALUMINUM diagonal (2,8)SW', 'straightword', { description: 'Only clean straight-line element name.' }),
+  N('swTune26', 'Row 14: "TUNE" + "twenty-six"', 'straightword', {
+    description: 'Letters 1-4 = TUNE; rest parses phonetically as "twenty-six" split by hyphen.'
+  }),
+  N('swTinOpener', 'Col 1 reversed: "tinstmuaopener"', 'straightword', { description: 'Contains TIN + OPENER → can opener → title "Can".' }),
+
+  // ------- GRID FACTS -------
+  N('gridSize', '14×14 grid', 'gridfact', { description: '196 cells total: 195 letters + 1 hyphen.' }),
+  N('gridMissing', 'Missing Q, V, Z', 'gridfact', { description: 'Alphabet positions 17+22+26 = 65.' }),
+  N('gridHyphen', 'Hyphen at (14,8)', 'gridfact', { description: 'The "wire". 14−8=6; 14×8=112; 14+8=22.' }),
+  N('gridU33', 'U-column-positions sum = 33', 'gridfact', { description: '7 Us in grid; their col sum = 33.' }),
+  N('gridCol6', 'Col 6 hex sum = 33', 'gridfact', { description: 'Reading STEP BY SIX as "col 6".' }),
+  N('gridSingletons', 'Singletons J, K', 'gridfact', { description: 'J (8,4); K (6,6) — K is in column 6.' }),
+
+  // ------- DATES / WIRE -------
+  N('date26', 'Date = 26', 'date', { description: 'Row-14 phonetic. The wire-date.' }),
+  N('date2026', 'Calendar year 2026', 'date', { description: 'Puzzle pub year. Adding 2026 has REPEATEDLY FAILED.' }),
+  N('dateRPM', '33⅓ RPM', 'date', { description: 'TUNES → vinyl records play at 33⅓.' }),
+  N('dateHyphenOp', '14 − 8 = 6', 'date', { description: 'Hyphen position generates stride.' }),
+
+  // ------- MECHANICS -------
+  N('mechHexSum', 'Hex-letter sum', 'mechanic', { description: 'Sum a-f letters → usually 167 on flat grid (REJECTED).' }),
+  N('mechStep6Grid', 'Step-6 on flat grid', 'mechanic', { description: 'Produces 167, 134, 154 families — ALL REJECTED.' }),
+  N('mechStep6Image', 'Step-6 on image bytes', 'mechanic', { description: 'Produces 184, 307 — current top picks.' }),
+  N('mechKingPathHex', 'King-path hex sum', 'mechanic', { description: 'Sum hex letters along axiom paths.' }),
+  N('mechCanOpener', 'Can-opener (perimeter strip)', 'mechanic', { description: 'Inner 12×12 vs perimeter separation.' }),
+  N('mechConcat', 'Concatenate hex digits', 'mechanic', { description: 'Form multi-digit hex integer from stride bytes.' }),
+
+  // ------- CANDIDATES (live) -------
+  N('c184', '184 ★', 'candidateTop', {
+    size: 32,
+    description: 'TOP: image step-6 from byte 91 = K.184 = Symphony 26. 5/5 axioms via Mozart reading.'
+  }),
+  N('c47', '47 ★', 'candidateTop', {
+    size: 28,
+    description: 'Strict-hex step-6 from byte 26 = Silver Z (absent dig-metal). 5/5 axioms.'
+  }),
+  N('c626', '626', 'candidate', { description: 'K.626 Requiem — literal LAST ENTRY in Köchel catalogue.' }),
+  N('c622', '622', 'candidate', { description: 'K.622 Clarinet Concerto — last K ≤ 626 via +6 stride from K.184.' }),
+  N('c551', '551', 'candidate', { description: 'K.551 Jupiter — last symphony.' }),
+  N('c345', '345', 'candidate', { description: 'K.184 + K.161a (dual catalogue).' }),
+  N('c210', '210', 'candidate', { description: '184 + 26 additive.' }),
+  N('c333', '333', 'candidate', { description: 'Track6+Al step-6 (307) + 26. Also 33⅓ RPM × 10s.' }),
+  N('c115', '115', 'candidate', { description: 'DATEONWIRE hex (89) + 26.' }),
+  N('c79', '79', 'candidate', { description: 'TUNES sum + axiom-len sum + Gold Z. Thematic top.' }),
+  N('c33', '33', 'candidate', { description: 'Col-6 hex + U-col + Vanadium + 33⅓ RPM.' }),
+  N('c23', '23', 'candidate', { description: 'Dig count + V Z + missing letter V.' }),
+  N('c307', '307', 'candidate', { description: 'Track-6 + Al step-6 raw (no additive).' }),
+  N('c89', '89', 'candidate', { description: 'DATEONWIRE king-path hex sum.' }),
+  N('c59', '59', 'candidate', { description: '33 + 26.' }),
+  N('c1006', '1006', 'candidate', { description: 'Sum of K-numbers for symphonies 26, 32, 38.' }),
+
+  // ------- FAILED / REJECTED -------
+  N('f600',  '600',  'failed', { description: 'Alan Moore Unearthing chain. External trivia.' }),
+  N('f7',    '7',    'failed', { description: 'Count of U\'s. Too trivial.' }),
+  N('f3241', '3241', 'failed', { description: 'WT22 variant chain.' }),
+  N('f3242', '3242', 'failed', { description: 'Wire Tapper 22 hex durations (original AI "answer").' }),
+  N('f26',   '26',   'failed', { description: 'Row-14 phonetic raw. Too direct — but clue to Mozart pivot.' }),
+  N('f22',   '22',   'failed', { description: 'V alphabet position / hyphen 14+8.' }),
+  N('f134',  '134',  'failed', { description: 'Arbitrary step-6 variant.' }),
+  N('f167',  '167',  'failed', { description: 'Step-6 hex from first hex letter on GRID. The key failure that pivoted us to the IMAGE.' }),
+  N('f2180', '2180', 'failed', { description: 'Step-6 from pos 8 + 2026.' }),
+  N('f2192', '2192', 'failed', { description: '167 + 2025. Key evidence AGAINST +2026 mechanic.' }),
+  N('f2193', '2193', 'failed', { description: '167 + 2026. Same.' }),
+];
+
+// ===========================================================
+// PART 5 — Edges (connections between theories)
+// ===========================================================
+function E(from, to, label = '', extra = {}) {
+  return {
+    from, to,
+    label,
+    font: { color: '#e0dcff', size: 10, strokeWidth: 0, align: 'middle' },
+    color: { color: 'rgba(255,255,255,0.35)', highlight: '#ffcd3a' },
+    smooth: { type: 'dynamic' },
+    ...extra
+  };
+}
+
+const EDGES_RAW = [
+  // Core → Axioms
+  E('core', 'ax1'), E('core', 'ax2'), E('core', 'ax3'), E('core', 'ax4'), E('core', 'ax5'),
+
+  // Core → main themes
+  E('core', 'moz',      'Tune 26 bridge'),
+  E('core', 'pweiSong', 'title quote'),
+  E('core', 'gridSize'),
+  E('core', 'gridHyphen', 'the wire'),
+
+  // Axiom → variants
+  E('ax1', 'fv1'), E('ax1', 'fv2'), E('ax1', 'fv3'), E('ax1', 'fv4'),
+  E('ax1', 'fv5'), E('ax1', 'fv6'), E('ax1', 'fv7'),
+
+  E('ax2', 'sv1'), E('ax2', 'sv2'), E('ax2', 'sv3'), E('ax2', 'sv4'),
+  E('ax2', 'sv5'), E('ax2', 'sv6'),
+
+  E('ax3', 'hv1'), E('ax3', 'hv2'), E('ax3', 'hv3'), E('ax3', 'hv4'),
+
+  E('ax4', 'dv1'), E('ax4', 'dv2'), E('ax4', 'dv3'), E('ax4', 'dv4'), E('ax4', 'dv5'),
+
+  E('ax5', 'iv1'), E('ax5', 'iv2'), E('ax5', 'iv3'), E('ax5', 'iv4'),
+
+  // Axiom → mechanics
+  E('ax3', 'mechHexSum'), E('ax3', 'mechKingPathHex'),
+  E('ax2', 'mechStep6Grid'), E('ax2', 'mechStep6Image'),
+
+  // Chemistry connections
+  E('elAl', 'swAluminum', 'only clean diagonal'),
+  E('elAl', 'aluminothermic'),
+  E('elV',  'aluminothermic'),
+  E('elV',  'gridMissing', 'V absent'),
+  E('elV',  'pweiDig44', 'dig theme'),
+  E('elAu', 'kpTunes', 'TUNES=79'),
+  E('elAu', 'kpAxiomSum', 'ax-len=79'),
+  E('elAg', 'imgStep6_26', 'strict-hex → 47'),
+  E('elFe', 'f26', 'Z=26 rejected'),
+  E('elHo', 'imgDQT1', '0x43=67'),
+  E('elRu', 'pweiDig44', 'Z=44'),
+  E('elAc', 'ax4', 'DATEONWIRE hex=89'),
+  E('elBa', 'c23'), E('elBa', 'c33'),
+  E('elPd', 'c79'), E('elPd', 'c33'),
+  E('elSn', 'swTinOpener'),
+  E('elCn', 'gridHyphen', '14×8=112'),
+  E('elRn', 'pwei1989'),
+
+  // Mozart cluster
+  E('moz', 'mozSym26'),
+  E('moz', 'swTune26', 'row 14'),
+  E('mozSym26', 'mozK161a'),
+  E('moz', 'mozK551'),
+  E('moz', 'mozK626', 'LAST ENTRY'),
+  E('moz', 'mozK622'),
+  E('moz', 'mozK1'),
+  E('mozSym26', 'c184', '→ K.184'),
+  E('mozK626',  'c626'),
+  E('mozK622',  'c622'),
+  E('mozK551',  'c551'),
+  E('mozK161a', 'c345', '184+161'),
+
+  // PWEI cluster
+  E('pweiSong', 'pweiTrack6'), E('pweiSong', 'pweiChart30'),
+  E('pweiSong', 'pweiDig44'),  E('pweiSong', 'pweiAlanMoore'),
+  E('pweiSong', 'pweiAlbum'),  E('pweiSong', 'pwei1989'),
+  E('pweiAlanMoore', 'pweiScore20', 'knows the score'),
+  E('pweiTrack6', 'ax2', 'Track 6 = STEP BY SIX'),
+  E('pweiScore20', 'img0x14', '20=0x14'),
+
+  // Image cluster
+  E('imgSOI', 'imgAPP0'), E('imgAPP0', 'imgDQT1'), E('imgDQT1', 'imgDQT2'),
+  E('imgDQT2', 'imgStep6_91', 'byte 91 start'),
+  E('imgStep6_91', 'c184'),
+  E('imgStep6_26', 'c47'),
+  E('img0x14', 'pweiScore20'),
+  E('imgSum4085', 'ax3'),
+
+  // King paths / straight words
+  E('kpTunes', 'c79'),
+  E('kpAxiomSum', 'c79'),
+  E('kpDig', 'pweiDig44'),
+  E('swTune26', 'mozSym26', 'TUNE 26 → K.184'),
+  E('swTinOpener', 'elSn'),
+  E('swAluminum', 'elAl'),
+
+  // Dates
+  E('date26', 'iv2', 'additive'),
+  E('date26', 'dv4', 'index'),
+  E('date2026', 'f2192'), E('date2026', 'f2193'), E('date2026', 'f2180'),
+  E('dateRPM', 'c33'), E('dateRPM', 'c333'),
+  E('dateHyphenOp', 'sv5'),
+
+  // Grid facts
+  E('gridU33', 'c33'),
+  E('gridCol6', 'c33'),
+  E('gridCol6', 'sv3'),
+  E('gridMissing', 'elV'),
+  E('gridMissing', 'elAg', 'silver also absent'),
+  E('gridHyphen', 'elCn'),
+  E('gridHyphen', 'date26'),
+  E('gridHyphen', 'dateHyphenOp'),
+
+  // Candidate dependencies
+  E('c184', 'iv1',  'LAST ENTRY = 184'),
+  E('c184', 'fv2',  'start byte 91'),
+  E('c184', 'sv4',  'stride 6 bytes'),
+  E('c184', 'hv2',  'all bytes'),
+  E('c184', 'dv4',  '26→K.184'),
+  E('c47',  'fv7',  'start byte 26'),
+  E('c47',  'hv3',  'strict-hex'),
+  E('c47',  'dv1',  'date=26'),
+  E('c47',  'elAg'),
+  E('c210', 'c184'), E('c210', 'iv2'),
+  E('c333', 'c307'), E('c333', 'iv2'),
+  E('c115', 'c89'),  E('c115', 'iv2'),
+  E('c59',  'c33'),  E('c59',  'iv2'),
+  E('c307', 'pweiTrack6'),
+  E('c1006', 'mozSym26'),
+
+  // Failed connections
+  E('f167', 'mechStep6Grid', 'old top answer'),
+  E('f2192', 'f167'), E('f2193', 'f167'),
+  E('f2180', 'mechStep6Grid'),
+  E('f600', 'pweiAlanMoore'),
+  E('f7', 'gridSize'),
+  E('f26', 'swTune26', 'rejected pivot'),
+  E('f22', 'gridHyphen'),
+  E('f3242', 'pweiSong', 'external trivia'),
+
+  // Cross-cluster: the key Mozart↔Image bridge
+  E('mozSym26', 'imgStep6_91', 'K.184 closure', { color: { color: '#ffcd3a', highlight: '#ff6ec7' }, width: 3 }),
+];
+
+// ===========================================================
+// PART 6 — Network initialization + interactivity
+// ===========================================================
+const nodesDS = new vis.DataSet(NODES_RAW);
+const edgesDS = new vis.DataSet(EDGES_RAW);
+
+const options = {
+  nodes: {
+    borderWidth: 2,
+    shadow: { enabled: true, color: 'rgba(0,0,0,0.6)', size: 12, x: 0, y: 2 },
+    font: { color: '#111', size: 14, face: 'Segoe UI', strokeWidth: 2, strokeColor: 'rgba(255,255,255,0.7)' }
+  },
+  edges: {
+    smooth: { type: 'continuous' },
+    arrows: { to: { enabled: false } }
+  },
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -80,
+      centralGravity: 0.004,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.8,
+      avoidOverlap: 0.4
+    },
+    stabilization: { iterations: 400, updateInterval: 25 }
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 180,
+    navigationButtons: false,
+    keyboard: true
+  },
+  groups: Object.fromEntries(
+    Object.entries(CATEGORIES).map(([k, v]) => [
+      k, { color: { background: v.color, border: v.color } }
+    ])
+  )
+};
+
+const network = new vis.Network(
+  document.getElementById('network'),
+  { nodes: nodesDS, edges: edgesDS },
+  options
+);
+
+// Details panel
+const detailsTitle = document.getElementById('details-title');
+const detailsBody  = document.getElementById('details-body');
+
+function showDetails(nodeId) {
+  const node = NODES_RAW.find(n => n.id === nodeId);
+  if (!node) return;
+  const cat = CATEGORIES[node.category];
+  const connected = network.getConnectedNodes(nodeId);
+  const neighbors = connected.map(id => NODES_RAW.find(n => n.id === id)).filter(Boolean);
+
+  detailsTitle.textContent = node.label;
+  detailsTitle.style.color = cat.color;
+
+  let html = '';
+  html += `<span class="label-tag" style="background:${cat.color}33;color:${cat.color}">${cat.label}</span>`;
+  html += `<p class="desc">${node.description || '(no description)'}</p>`;
+  if (neighbors.length) {
+    html += `<div class="links"><strong style="color:#fff">Connected to:</strong>`;
+    neighbors.forEach(nb => {
+      html += `<a data-id="${nb.id}">→ ${nb.label}</a>`;
+    });
+    html += `</div>`;
+  }
+  detailsBody.innerHTML = html;
+  // wire up links
+  detailsBody.querySelectorAll('a[data-id]').forEach(a => {
+    a.onclick = () => {
+      network.selectNodes([a.dataset.id]);
+      network.focus(a.dataset.id, { scale: 1.2, animation: { duration: 500, easingFunction: 'easeOutQuad' } });
+      showDetails(a.dataset.id);
+    };
+  });
+}
+
+network.on('click', params => {
+  if (params.nodes.length) showDetails(params.nodes[0]);
+});
+
+// Category filter
+function applyFilter() {
+  const visibleIds = new Set(
+    NODES_RAW.filter(n => activeCategories.has(n.category)).map(n => n.id)
+  );
+  nodesDS.forEach(n => {
+    nodesDS.update({ id: n.id, hidden: !visibleIds.has(n.id) });
+  });
+}
+
+// Search
+const searchbox = document.getElementById('searchbox');
+searchbox.addEventListener('input', () => {
+  const q = searchbox.value.trim().toLowerCase();
+  if (!q) return;
+  const hits = NODES_RAW.filter(n =>
+    n.label.toLowerCase().includes(q) ||
+    (n.description || '').toLowerCase().includes(q)
+  );
+  if (hits.length) {
+    const first = hits[0];
+    network.selectNodes([first.id]);
+    network.focus(first.id, { scale: 1.4, animation: { duration: 600, easingFunction: 'easeOutQuad' } });
+    showDetails(first.id);
+  }
+});
+
+// Hover cursor
+network.on('hoverNode', () => document.body.style.cursor = 'pointer');
+network.on('blurNode',  () => document.body.style.cursor = 'default');
+
+// Start focused on core
+network.once('stabilizationIterationsDone', () => {
+  network.focus('core', { scale: 0.8, animation: true });
+  showDetails('core');
+});
+</script>
+</body>
+</html>
